@@ -42,10 +42,10 @@ param (
     [string]$Unet = "NoctQ_V4_int8_convrot.safetensors",
 
     [Parameter(Mandatory = $false)]
-    [string]$GgufClip = "Qwen-Image-2.1-Turbo-Uncensored-AD-Q4_K.gguf",
+    [string]$GgufClip = "Qwen-Image-2.1-Turbo-AD-Q4_K.gguf",
 
     [Parameter(Mandatory = $false)]
-    [string]$VisionSource = "mmproj-Qwen-Image-2.1-Turbo-Uncensored-F16.gguf",
+    [string]$VisionSource = "mmproj-Qwen-Image-2.1-Turbo-F16.gguf",
 
     [Parameter(Mandatory = $false)]
     [string]$Lora = "none",

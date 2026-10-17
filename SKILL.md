@@ -20,8 +20,8 @@ description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT
   - `参考图/`：官方素材与参考卡面归档
   - `配置与工作流/`：执行脚本与工作流 JSON
 - **核心模型组合（8GB显存优化热加载）**：
-  - Diffusion: `NoctQ_V4_int8_convrot.safetensors` (NoctQ V4 终极解剖特化主模型，默认唯一主力)
-  - LoRA: `none` (NoctQ V4 本身解剖特征极致逼真，不叠加多余 LoRA 以保持线条纯粹)
+  - Diffusion: `NoctQ_V4_int8_convrot.safetensors` (NoctQ V4 终极结构与微观画质特化主模型，默认唯一主力)
+  - LoRA: `none` (NoctQ V4 本身线条与结构特征极致逼真，不叠加多余 LoRA 以保持画面纯粹)
   - Text/Vision Encoder: `qwen3vl_8b_nvfp4.safetensors`
   - VAE: `qwen_image_2.1_vae_bf16.safetensors`
   - 核心采样器: **★ Viggle Turbo 8 步黄金配置 ★** (`Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors` + `KSampler` Euler/Simple, Steps: 8, CFG: 1.0。耗时仅 48 秒，微观去噪轨迹完全收敛，画质与速度的终极平衡点)
@@ -50,7 +50,7 @@ description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT
   - **统一定式前缀**：
     > `全新的画面与构图：画面中的角色长相、五官与发型严格与图1保持高度一致。`
   - **表情与神态完全自由控制**：表情不受参考图神态约束，可由文本提示词自由指挥（如灿烂微笑、慵懒微醺、害羞灵动、冷艳等）。
-  - **后续描述 100% 聚焦于全新内容**：全新表情神态、全新的姿态动作、机位景别、全新穿搭（如比基尼/礼服/睡衣）、场景背景、环境光影。
+  - **后续描述 100% 聚焦于全新内容**：全新表情神态、全新的姿态动作、机位景别、全新穿搭（如舞台礼服/日常制服/运动穿搭）、场景背景、环境光影。
 - **无参考图时（原创角色/场景）**：
   - 完整描述主体特征、构图、动作与光影。
 
@@ -114,11 +114,11 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scri
   -Height 1152
 ```
 
-### 2. GGUF 专属管线 (Uncensored GGUF Q4_K 文本编码器 + NoctQ V4 + Viggle 8 步)
+### 2. GGUF 专属管线 (GGUF Q4_K 高精度量化文本编码器 + NoctQ V4 + Viggle 8 步)
 ```powershell
 powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scripts\generate_gguf.ps1" `
-  -Prompt "大师级日系私房艺术裸体写真..." `
-  -GgufClip "Qwen-Image-2.1-Turbo-Uncensored-AD-Q4_K.gguf" `
+  -Prompt "大师级二次元舞台演出概念画，光影层次丰富..." `
+  -GgufClip "Qwen-Image-2.1-Turbo-AD-Q4_K.gguf" `
   -VisionSource "qwen3vl_8b_nvfp4.safetensors" `
   -Prefix "GGUF-Q4K-Artistic" `
   -Width 896 `

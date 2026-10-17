@@ -38,10 +38,10 @@
 
 | 类型 | 推荐模型文件名 | 存放路径 | 说明 |
 | :--- | :--- | :--- | :--- |
-| **Diffusion 主模型** | `NoctQ_V4_int8_convrot.safetensors` | `ComfyUI/models/diffusion_models/` | 终极解剖特化主力模型 |
+| **Diffusion 主模型** | `NoctQ_V4_int8_convrot.safetensors` | `ComfyUI/models/diffusion_models/` | 结构与微观画质特化主力模型 |
 | **LoRA 加速器** | `Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors` | `ComfyUI/models/loras/` | Viggle Turbo 4/8步加速 |
 | **文本与视觉编码器** | `qwen3vl_8b_nvfp4.safetensors` | `ComfyUI/models/clip/` | NVFP4 多模态编码器 |
-| **GGUF 编码器(可选)** | `Qwen-Image-2.1-Turbo-Uncensored-AD-Q4_K.gguf` | `ComfyUI/models/clip/` | 适合深度语义管线 |
+| **GGUF 编码器(可选)** | `Qwen-Image-2.1-Turbo-AD-Q4_K.gguf` | `ComfyUI/models/clip/` | 适合深度语义管线 |
 | **VAE** | `qwen_image_2.1_vae_bf16.safetensors` | `ComfyUI/models/vae/` | 官方 BF16 VAE |
 
 ---
