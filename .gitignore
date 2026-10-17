@@ -1,0 +1,18 @@
+# Output and temporary images
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.tmp
+*.log
+
+# Windows thumbnail caches
+Thumbs.db
+ehthumbs.db
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
