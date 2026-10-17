@@ -63,11 +63,15 @@ description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT
 - **通用负向防崩词库**：
   > `(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation`
 
-### 5. 全自动归档与呈现 (Workspace & Artifact Integration)
-- 生成完毕后，自动复制生成的图片至：
-  1. `<WorkspaceDir>\ComfyUI生图成果\生成的图片\`
-  2. `<appDataDir>\brain\<conversation-id>\`
-- 注册为 Artifact，并在 carousel 轮播组件中直观展示给用户。
+### 5. 聊天框直发与全端呈现铁律 (Direct In-Chat Delivery & Multi-Platform Sync)
+- **聊天框大图直出（强制铁律）**：
+  - 每次生图质检通过后，**必须直接在对话回复的 Markdown 正文中使用图片语法 `![alt](file:///...)` 将成图直发至聊天框**，确保用户在当前对话气泡中一眼直观看到完整高清大图。
+  - **严禁仅提供文字超链接、代码块或仅收录至 Artifact 文件中而不在聊天框直出大图**。
+- **全端与手机端 (Remote Studio) 沉浸兼容**：
+  - 必须同时完美兼容桌面端 IDE 与移动端/手机端浏览器（Antigravity Remote Studio）。
+  - 聊天框内直发的图片在手机端已实现自动解析与全屏 Lightbox 交互，支持轻触放大与滑动审视。
+- **全自动本地归档**：
+  - 生成完毕后，脚本自动将成品与参考图归类归档至 `<WorkspaceDir>\ComfyUI生图成果\生成的图片\` 及 `<appDataDir>\brain\<conversation-id>\`。
 
 ### 6. 服务离线自愈与静默自启 (Auto-Start Mechanism)
 - **零干预自动拉起**：每次发起生图前，脚本自动探测 `http://127.0.0.1:8188/system_stats`。
