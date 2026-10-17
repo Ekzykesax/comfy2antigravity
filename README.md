@@ -126,10 +126,14 @@ powershell -ExecutionPolicy Bypass -File "scripts/generate.ps1" -Prompt "夏日�
 本技能内置的默认生图管线经过严格工业级调优：
 
 1. **★ Viggle Turbo 8 步黄金去噪 ★**：耗时仅约 **42 秒**（8GB 显存显卡实测），告别传统动辄数分钟的漫长去噪等待，且细节线条完全收敛。
-2. **Autogrow 槽位协议 (`images.image_1`)**：解决多模态视觉输入在 ComfyUI API 模式下的张量布尔歧义报错，保障参考生图 100% 成功率。
-3. **毫秒级参考图自动预缩放**：送入多模态前自动等比压缩至 1024 像素内，大幅节省 80% 视觉 Token 与显存搬运耗时。
-4. **自适应画幅**：根据提示词语义自动推荐 16:9（全景/电影感）、4:3（卧姿/横幅）、9:16（全身立绘）、3:4（肖像写真）、1:1（方形头像）。
-5. **成果自动归档**：生图产物统一归类至当前工作区的 `ComfyUI生图成果/生成的图片/` 与 `参考图/`。
+2. **Autogrow 槽位协议 (`images.image_1` / `images.image_2`)**：解决多模态视觉输入在 ComfyUI API 模式下的张量布尔歧义报错，保障参考生图与图像编辑 100% 成功率。
+3. **通用高保真图像编辑管线 (`edit_image.ps1`)**：
+   - 官方纯净原生 25 步（Euler / Simple, CFG: 1.0），**严禁使用加速 LoRA**；
+   - `resolution = 0` 严格继承原图尺寸，潜空间直承原图 Latent，实现未修改区域（背景建筑、光影与人物五官）1:1 像素级物理锚定；
+    - 支持换装、改发型、变表情、调动作、增减道具、风格氛围迁移以及双图指定款式换装。
+4. **毫秒级参考图自动预缩放**：送入多模态前自动等比压缩至 1024 像素内，大幅节省 80% 视觉 Token 与显存搬运耗时。
+5. **自适应画幅**：根据提示词语义自动推荐 16:9（全景/电影感）、4:3（卧姿/横幅）、9:16（全身立绘）、3:4（肖像写真）、1:1（方形头像）。
+6. **成果自动归档**：生图产物统一归类至当前工作区的 `ComfyUI生图成果/生成的图片/` 与 `参考图/`。
 
 ---
 
@@ -137,16 +141,21 @@ powershell -ExecutionPolicy Bypass -File "scripts/generate.ps1" -Prompt "夏日�
 
 ```text
 comfy2antigravity/
-├── SKILL.md                 # Antigravity 智能体技能主配置文件
+├── SKILL.md                 # Antigravity 智能体技能主配置文件 (含文生图与图像编辑全规范)
 ├── README.md                # 技能详细指南与小白从 0 到 1 教程
 ├── LICENSE                  # Apache 2.0 开源协议
 ├── plugin.json              # 插件化清单配置文件
+├── workflows/
+│   └── 图像编辑_原生25步_NoctQ.json  # ComfyUI GUI 用户工作流 (无加速LoRA原生编辑)
 └── scripts/
-    ├── generate.ps1         # 内置旗舰生图管线 (NVFP4 + Viggle 8 步)
+    ├── generate.ps1         # 构图创作旗舰生图管线 (NVFP4 + Viggle 8 步，文生图/参考图)
+    ├── edit_image.ps1       # 通用高保真图像编辑管线 (官方纯净原生 25 步，换装/调姿/修容/锚定)
+
     ├── generate_gguf.ps1    # GGUF 特化编码器管线
     ├── run_workflow.ps1     # 通用自定义工作流 JSON 执行器 (支持任意模型)
     └── start_comfyui.ps1    # ComfyUI 离线静默唤醒与健康探测脚本
 ```
+
 
 ---
 

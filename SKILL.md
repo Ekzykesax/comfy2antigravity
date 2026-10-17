@@ -1,6 +1,6 @@
 ---
 name: comfy2antigravity
-description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT8 + Qwen3-VL 8B NVFP4 + 4-Step Fun-Acc PDD) across all styles, characters, poses, and clothing. Automatically handles character reference images, autogrow slot mapping (images.image_1), separation-of-concerns prompt engineering, anatomical stability, and workspace organization under ComfyUI生图成果/.
+description: Generates and edits high-quality images via local ComfyUI (NoctQ V4 int8 + Qwen3-VL 8B NVFP4). Supports direct text-to-image (generate.ps1, Viggle Turbo 8 steps), character reference generation, and universal high-fidelity image editing (edit_image.ps1, native 25 steps, no turbo LoRA, 1:1 background/face anchor for outfits, hairstyles, poses, props, inpainting). Automatically handles autogrow slot mapping (images.image_1/2), anatomical stability, and workspace organization under ComfyUI生图成果/.
 ---
 
 # ComfyUI Qwen-Image 通用生图工作流技能
@@ -24,7 +24,9 @@ description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT
   - LoRA: `Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors` -> [Viggle/Qwen-Image-2.1-viggle-turbo](https://huggingface.co/Viggle/Qwen-Image-2.1-viggle-turbo) (8步极速黄金去噪加速)
   - Text/Vision Encoder: `qwen3vl_8b_nvfp4.safetensors` -> [Comfy-Org/Qwen3-VL](https://huggingface.co/Comfy-Org/Qwen3-VL) (NVFP4 省显存多模态编码器)
   - VAE: `qwen_image_2.1_vae_bf16.safetensors` -> [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1) (官方 BF16 VAE)
-  - 核心采样器: **★ Viggle Turbo 8 步黄金配置 ★** (`Euler / Simple`, Steps: 8, CFG: 1.0。耗时仅 42 秒，微观去噪轨迹完全收敛，画质与速度的终极平衡点)
+  - 核心采样器:
+    - **直接文生图 / 参考图生图**：**★ Viggle Turbo 8 步黄金配置 ★** (`Euler / Simple`, Steps: 8, CFG: 1.0。耗时约 42 秒，微观去噪轨迹完全收敛，兼顾极速与构图创作)。
+    - **高保真图像编辑**：**★ 官方原生 25 步纯净配置 ★** (`Euler / Simple`, Steps: 25, CFG: 1.0。**严禁使用加速 LoRA**，`resolution = 0` 继承原图比例，潜空间直承原图 Latent，实现背景与五官 1:1 物理锚定)。
 
 ---
 
@@ -136,4 +138,39 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   -Prompt "未来科幻概念插画，高精细节..."
 ```
 
-无参考图时省略 `-RefImage` 参数即可。
+### 4. 通用高保真图像编辑管线 (全功能指令编辑，官方纯净原生 25 步)
+支持换装、改发型、调表情、变姿势、增减环境道具、环境风格置换等任意自然语言指令编辑，严格 1:1 锚定未修改区域。
+
+#### 示例 A：换装与服饰款式替换
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\edit_image.ps1" `
+  -Image "photo.jpg" `
+  -Prompt "把人物的日常便服换成优雅的黑色吊带晚礼服，佩戴珍珠项链，发型与背景环境严格保持不变"
+```
+
+#### 示例 B：双图精准指定换装 (图1人物 + 图2服装参考)
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\edit_image.ps1" `
+  -Image "person.jpg" `
+  -SecondImage "dress_design.png" `
+  -Prompt "将图1中人物的衣服精准替换为图2中的服装款式与材质，人物长相五官与原图背景严格不变"
+```
+
+#### 示例 C：发型、表情与氛围微调
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\edit_image.ps1" `
+  -Image "portrait.jpg" `
+  -Prompt "将人物发型改为棕色波浪长卷发，表情改为温柔浅笑，微风吹拂发丝，衣服与背景完全不变"
+```
+
+#### 示例 D：背景光影与季节氛围置换
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\edit_image.ps1" `
+  -Image "landscape_portrait.jpg" `
+  -Prompt "将背景环境调整为静谧的黄昏落日时分，晚霞金光洒落在人物发梢与肩头，人物衣着与五官完全保持一致"
+```
+
+> **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。
+
+
+
