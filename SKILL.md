@@ -19,12 +19,12 @@ description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT
   - `生成的图片/`：产出图最终归档
   - `参考图/`：官方素材与参考卡面归档
   - `配置与工作流/`：执行脚本与工作流 JSON
-- **核心模型组合（8GB显存优化热加载）**：
-  - Diffusion: `NoctQ_V4_int8_convrot.safetensors` (NoctQ V4 终极结构与微观画质特化主模型，默认唯一主力)
-  - LoRA: `none` (NoctQ V4 本身线条与结构特征极致逼真，不叠加多余 LoRA 以保持画面纯粹)
-  - Text/Vision Encoder: `qwen3vl_8b_nvfp4.safetensors`
-  - VAE: `qwen_image_2.1_vae_bf16.safetensors`
-  - 核心采样器: **★ Viggle Turbo 8 步黄金配置 ★** (`Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors` + `KSampler` Euler/Simple, Steps: 8, CFG: 1.0。耗时仅 48 秒，微观去噪轨迹完全收敛，画质与速度的终极平衡点)
+- **核心模型组合与 Hugging Face 官方/社区下载地址（8GB显存优化）**：
+  - Diffusion: `NoctQ_V4_int8_convrot.safetensors` -> [Noctaluna/Noct-Q-Uncensored-Qwen-Image-2.1](https://huggingface.co/Noctaluna/Noct-Q-Uncensored-Qwen-Image-2.1) (结构与微观画质特化主模型)
+  - LoRA: `Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors` -> [Viggle/Qwen-Image-2.1-viggle-turbo](https://huggingface.co/Viggle/Qwen-Image-2.1-viggle-turbo) (8步极速黄金去噪加速)
+  - Text/Vision Encoder: `qwen3vl_8b_nvfp4.safetensors` -> [Comfy-Org/Qwen3-VL](https://huggingface.co/Comfy-Org/Qwen3-VL) (NVFP4 省显存多模态编码器)
+  - VAE: `qwen_image_2.1_vae_bf16.safetensors` -> [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1) (官方 BF16 VAE)
+  - 核心采样器: **★ Viggle Turbo 8 步黄金配置 ★** (`Euler / Simple`, Steps: 8, CFG: 1.0。耗时仅 42 秒，微观去噪轨迹完全收敛，画质与速度的终极平衡点)
 
 ---
 
@@ -123,6 +123,13 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scri
   -Prefix "GGUF-Q4K-Artistic" `
   -Width 896 `
   -Height 1152
+```
+
+### 3. 通用自定义工作流 JSON 调用 (支持 SDXL / Flux / 任意自定义模型)
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scripts\run_workflow.ps1" `
+  -WorkflowPath "path/to/your_workflow_api.json" `
+  -Prompt "未来科幻概念插画，高精细节..."
 ```
 
 无参考图时省略 `-RefImage` 参数即可。

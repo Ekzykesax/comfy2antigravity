@@ -1,15 +1,18 @@
 {
   "name": "comfyui-qwen-image",
   "version": "1.0.0",
-  "description": "Production-grade anime and photorealistic image generation via local ComfyUI (NoctQ V4 INT8 + Viggle Turbo 8-step).",
+  "description": "Universal local ComfyUI workflow runner and generation engine with built-in flagship Qwen-Image 2.1 (NoctQ V4 + Viggle Turbo 8-step) pipeline.",
   "author": "Ekzykesax",
   "license": "Apache-2.0",
   "keywords": [
     "comfyui",
+    "comfyui-universal",
+    "text-to-image",
     "qwen-image",
     "noctq",
     "viggle-turbo",
-    "antigravity",
-    "ai-art"
+    "flux",
+    "sdxl",
+    "antigravity"
   ]
 }
