@@ -6,6 +6,10 @@
 *.tmp
 *.log
 
+# Allow tracking preview assets
+!assets/
+!assets/*
+
 # Windows thumbnail caches
 Thumbs.db
 ehthumbs.db
