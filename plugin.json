@@ -1,5 +1,5 @@
 {
-  "name": "comfyui-qwen-image",
+  "name": "comfy2antigravity",
   "version": "1.0.0",
   "description": "Universal local ComfyUI workflow runner and generation engine with built-in flagship Qwen-Image 2.1 (NoctQ V4 + Viggle Turbo 8-step) pipeline.",
   "author": "Ekzykesax",

@@ -1,5 +1,5 @@
 ---
-name: comfyui-qwen-image
+name: comfy2antigravity
 description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT8 + Qwen3-VL 8B NVFP4 + 4-Step Fun-Acc PDD) across all styles, characters, poses, and clothing. Automatically handles character reference images, autogrow slot mapping (images.image_1), separation-of-concerns prompt engineering, anatomical stability, and workspace organization under ComfyUI生图成果/.
 ---
 
@@ -106,7 +106,7 @@ description: Generates high-quality images via local ComfyUI (Qwen-Image-2.1 INT
 
 ### 1. 默认旗舰管线 (NVFP4 + Viggle 8 步)
 ```powershell
-powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scripts\generate.ps1" `
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\generate.ps1" `
   -Prompt "全新的画面与构图：画面中的角色长相、五官、发型与画风严格与图1保持高度一致。全新的姿势与场景：落地窗前背影站姿回眸写真..." `
   -RefImage "anon_ref.png" `
   -Prefix "Viggle8-Anon-Standing" `
@@ -116,7 +116,7 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scri
 
 ### 2. GGUF 专属管线 (GGUF Q4_K 高精度量化文本编码器 + NoctQ V4 + Viggle 8 步)
 ```powershell
-powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scripts\generate_gguf.ps1" `
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\generate_gguf.ps1" `
   -Prompt "大师级二次元舞台演出概念画，光影层次丰富..." `
   -GgufClip "Qwen-Image-2.1-Turbo-AD-Q4_K.gguf" `
   -VisionSource "qwen3vl_8b_nvfp4.safetensors" `
@@ -127,7 +127,7 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scri
 
 ### 3. 通用自定义工作流 JSON 调用 (支持 SDXL / Flux / 任意自定义模型)
 ```powershell
-powershell -ExecutionPolicy Bypass -File ".agents\skills\comfyui-qwen-image\scripts\run_workflow.ps1" `
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\run_workflow.ps1" `
   -WorkflowPath "path/to/your_workflow_api.json" `
   -Prompt "未来科幻概念插画，高精细节..."
 ```

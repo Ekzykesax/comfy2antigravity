@@ -1,6 +1,6 @@
-# ComfyUI Universal Generator · 本地生图智能调度技能 (Antigravity Skill)
+# comfy2antigravity · ComfyUI 通用本地生图与智能调度技能 (Antigravity Skill)
 
-[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfyui-qwen-image)
+[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfy2antigravity)
 [![ComfyUI](https://img.shields.io/badge/Backend-ComfyUI-orange.svg)](https://github.com/comfyanonymous/ComfyUI)
 [![Builtin-NoctQ_V4](https://img.shields.io/badge/Default__Model-NoctQ__V4-purple.svg)]()
 [![Sampler-Viggle_Turbo](https://img.shields.io/badge/Sampler-Viggle__Turbo__8Steps-success.svg)]()
@@ -68,10 +68,10 @@
 在您的项目工作区终端执行以下克隆命令即可一键安装：
 
 ```bash
-git clone https://github.com/Ekzykesax/comfyui-qwen-image.git .agents/skills/comfyui-universal
+git clone https://github.com/Ekzykesax/comfy2antigravity.git .agents/skills/comfy2antigravity
 ```
 
-*(如果希望电脑上所有 Antigravity 项目全局可用，克隆至 `~/.gemini/config/skills/comfyui-universal` 即可)*
+*(如果希望电脑上所有 Antigravity 项目全局可用，克隆至 `~/.gemini/config/skills/comfy2antigravity` 即可)*
 
 ---
 
@@ -136,7 +136,7 @@ powershell -ExecutionPolicy Bypass -File "scripts/generate.ps1" -Prompt "夏日�
 ## 📂 仓库文件清单
 
 ```text
-comfyui-universal/
+comfy2antigravity/
 ├── SKILL.md                 # Antigravity 智能体技能主配置文件
 ├── README.md                # 技能详细指南与小白从 0 到 1 教程
 ├── LICENSE                  # Apache 2.0 开源协议
