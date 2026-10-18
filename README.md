@@ -31,8 +31,12 @@ ComfyUI 本地图像生成与高保真编辑插件，专为 **Antigravity**、**
 4. **双采样方案按需分工**：
    - **文生图 / 参考生图（构图创作）**：采用 Viggle Turbo 8 步加速（Euler / Simple, CFG 1.0），空 Latent 随机扩散，约 40 秒快速出图。
    - **通用图像编辑（高保真原图锚定）**：采用官方原生 25 步采样，不加载加速 LoRA，`resolution = 0` 继承原图尺寸，直承原图 Latent，实现未修改区域（背景、光影、五官）1:1 锚定。
-5. **服务状态检测与自启**：执行生图前自动探测 ComfyUI API 连通性，若未启动则自动后台拉起，无需手动开启终端。
-6. **图像预处理与自动归档**：输入参考图自动预缩放至长边 1024 像素内减少显存占用；生成结果自动归档至工作区 `ComfyUI生图成果/` 目录。
+5. **4K 景深保真双流超分（Focus-Aware Bokeh Preservation）**：
+   - 唯一主力使用 **`4x_foolhardy_Remacri.pth`**，内置双流焦外保真算法；
+   - 焦内核心主体（人物五官、发丝、服饰纹理与核心道具）执行 4K 神经级精细超分；
+   - 焦外背景（远景、雪原、虚化光斑）通过纯净数学平滑放大，通过高频能量图梯度羽化无缝融合，彻底消除传统 ESRGAN/UltraSharp 在大光圈景深虚化区域强行锐化、产生生硬噪点的顽疾。
+6. **服务状态检测与自启**：执行生图前自动探测 ComfyUI API 连通性，若未启动则自动后台拉起，无需手动开启终端。
+7. **图像预处理与自动归档**：输入参考图自动预缩放至长边 768 像素内减少显存占用并杜绝溢出；生成结果自动归档至工作区 `ComfyUI生图成果/` 目录。
 
 ---
 
@@ -50,6 +54,7 @@ ComfyUI 本地图像生成与高保真编辑插件，专为 **Antigravity**、**
 | **加速 LoRA (可选)** | `Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors` | `ComfyUI/models/loras/` | [Viggle Turbo](https://huggingface.co/Viggle/Qwen-Image-2.1-viggle-turbo) |
 | **多模态编码器** | `qwen3vl_8b_nvfp4.safetensors` | `ComfyUI/models/clip/` | [Qwen3-VL](https://huggingface.co/Comfy-Org/Qwen3-VL) |
 | **VAE 编解码器** | `qwen_image_2.1_vae_bf16.safetensors` | `ComfyUI/models/vae/` | [Qwen-Image-2.1 VAE](https://huggingface.co/Comfy-Org/Qwen-Image-2.1) |
+| **4K 极清超分模型** | `4x_foolhardy_Remacri.pth` | `ComfyUI/models/upscale_models/` | [4x_foolhardy_Remacri](https://huggingface.co/FacehugmanIII/4x_foolhardy_Remacri) |
 
 > 提示：若使用其他文件名，可在调用时通过 `--unet` / `-Unet` 或 `--lora` / `-Lora` 参数指定。
 
@@ -121,6 +126,19 @@ git clone https://github.com/Ekzykesax/comfy2antigravity.git
     python scripts/edit_image.py --image "person.jpg" --second-image "dress.png" --prompt "将图1中人物的服装替换为图2中的款式与材质，人物长相与背景保持不变"
     ```
 
+### 4. 4K 景深保真极清超分（Remacri + Bokeh Preservation）
+解决常规超分无脑锐化背景虚化的硬伤，主体保持 4K 极清，背景保持大光圈自然光学奶油虚化。
+
+- **自然语言**：“把生成的图片超分到 4K，保留自然的背景景深虚化。”
+- **Python CLI (跨平台 / DeepSeek Harness / Codex)**：
+  ```bash
+  python scripts/upscale_image.py --image "output/portrait.png" --target_width 3840
+  ```
+- **PowerShell (Windows)**：
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File "scripts/upscale_image.ps1" -Image "output/portrait.png" -Width 3840
+  ```
+
 ---
 
 ## 进阶：自定义模型与工作流
@@ -153,8 +171,10 @@ comfy2antigravity/
 └── scripts/
     ├── generate.py          # 跨平台 Python 文生图 / 参考图生图 (DeepSeek / Codex 主力)
     ├── edit_image.py        # 跨平台 Python 通用高保真图像编辑 (DeepSeek / Codex 主力)
+    ├── upscale_image.py     # 跨平台 Python 4K 景深保真双流超分 (Remacri + Bokeh)
     ├── generate.ps1         # Windows PowerShell 文生图 / 参考图生图
     ├── edit_image.ps1       # Windows PowerShell 图像编辑
+    ├── upscale_image.ps1    # Windows PowerShell 4K 景深保真双流超分
     ├── generate_gguf.ps1    # GGUF 特化编码器生图脚本
     ├── run_workflow.ps1     # 自定义工作流 API JSON 执行器
     └── start_comfyui.ps1    # 服务状态检测与静默自启脚本

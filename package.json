@@ -5,11 +5,13 @@
   "main": "scripts/generate.py",
   "bin": {
     "comfy-gen": "./scripts/generate.py",
-    "comfy-edit": "./scripts/edit_image.py"
+    "comfy-edit": "./scripts/edit_image.py",
+    "comfy-upscale": "./scripts/upscale_image.py"
   },
   "scripts": {
     "generate": "python scripts/generate.py",
-    "edit": "python scripts/edit_image.py"
+    "edit": "python scripts/edit_image.py",
+    "upscale": "python scripts/upscale_image.py"
   },
   "dsh": {
     "type": "plugin",
@@ -24,6 +26,11 @@
         "name": "comfy_edit",
         "description": "Universal high-fidelity image editing via ComfyUI (outfit changes, hairstyle, posture, background).",
         "command": "python scripts/edit_image.py --image \"{image}\" --prompt \"{prompt}\""
+      },
+      {
+        "name": "comfy_upscale",
+        "description": "4K focus-aware bokeh-preserving upscale via ComfyUI using 4x_foolhardy_Remacri.",
+        "command": "python scripts/upscale_image.py --image \"{image}\" --target_width {width}"
       }
     ]
   },

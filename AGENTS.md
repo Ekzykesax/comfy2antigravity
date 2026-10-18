@@ -41,11 +41,24 @@ Used for modifying existing images: changing outfits, altering hairstyles, modif
   python scripts/edit_image.py --image "input/person.jpg" --second-image "input/dress.png" --prompt "Replace the outfit in image 1 with the dress design in image 2, preserve face and background"
   ```
 
+### Tool 3: 4K Focus-Aware Bokeh-Preserving Upscale
+Used for upscaling images to 4K (3840px+) while strictly preserving optical camera depth-of-field bokeh (preventing artificial over-sharpening of blurred backgrounds).
+- **Script**: `scripts/upscale_image.py`
+- **Model**: `4x_foolhardy_Remacri.pth` (with dual-stream gradient-feathered focus fusion)
+- **Usage**:
+  ```bash
+  python scripts/upscale_image.py --image "<image_path>" [--target_width 3840] [--target_height 0] [--model "4x_foolhardy_Remacri.pth"]
+  ```
+- **Example**:
+  ```bash
+  python scripts/upscale_image.py --image "output/portrait.png" --target_width 3840
+  ```
+
 ---
 
 ## 2. Standard Output Specification
 
-Both CLI tools return a clean JSON object to `stdout`:
+All CLI tools return a clean JSON object to `stdout`:
 
 ```json
 {
