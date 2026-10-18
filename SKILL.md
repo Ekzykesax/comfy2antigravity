@@ -113,6 +113,14 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
   3. **身体解剖轴线**：核查四肢、脊柱与比例是否自然流畅。
 - **自动自愈清理**：若发现手部、面部或肢体出现明显崩坏畸变，**必须第一时间自动删除缺陷废图**，针对性调整姿态描述与负向词，重新执行渲染，直至产出合格成品后再呈现给用户。
 
+### 11. 4K 景深保真双流超分铁律 (Focus-Aware Bokeh Preservation)
+- **唯一主力超分模型**：强制使用 **`4x_foolhardy_Remacri.pth`**，**严禁使用 `4x-UltraSharp`**（彻底杜绝其在焦外虚化处无差别硬锐化脑补假噪点、破坏大光圈空气感的致命缺陷）。
+- **双流景深感知机制 (Dual-Stream Fusion)**：
+  1. **主体高频流 (Neural 4K)**：仅对焦平面核心主体（人物五官轮廓、发丝眼眸、毛皮与服饰纹理、建筑结构）执行 Remacri 神经级 4K 精细放大；
+  2. **焦外光学平滑流 (Lanczos Bokeh)**：对大光圈自然虚化的背景（远景雪林、雪山、天空、远端光斑）执行纯净数学平滑放大，100% 锁死单反光学大光圈奶油般通透虚化；
+  3. **焦点羽化融合**：利用原始图像的高频能量梯度自动生成焦点权重，两流自然过渡无缝融合。
+- **专属脚本**：使用 `scripts/upscale_image.ps1`（或 `scripts/upscale_image.py`）。
+
 ---
 
 ## 快速调用指南 (Quick Start)
@@ -177,7 +185,15 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   -Prompt "将背景环境调整为静谧的黄昏落日时分，晚霞金光洒落在人物发梢与肩头，人物衣着与五官完全保持一致"
 ```
 
-> **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。
+### 5. 4K 景深保真双流超分管线 (Remacri + Bokeh Preservation)
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\upscale_image.ps1" `
+  -Image "Alice-SnowVillage-Native25Step-2M_00001_.png" `
+  -Width 3840 `
+  -Prefix "Alice-SnowVillage-4K"
+```
+
+> **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。超分管线默认全面开启焦外保真，杜绝死锐假噪点。
 
 > 💡 **跨平台与多 Agent 兼容**：所有脚本均提供对等的纯标准库跨平台 Python CLI（`scripts/generate.py`、`scripts/edit_image.py`），原生适配 **DeepSeek Harness (`dsh`)** 与 **OpenAI Codex** 环境，规范详见 [`AGENTS.md`](AGENTS.md)。
 
