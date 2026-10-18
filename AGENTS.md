@@ -42,12 +42,12 @@ Used for modifying existing images: changing outfits, altering hairstyles, modif
   ```
 
 ### Tool 3: 4K Focus-Aware Bokeh-Preserving Upscale
-Used for upscaling images to 4K (3840px+) while strictly preserving optical camera depth-of-field bokeh (preventing artificial over-sharpening of blurred backgrounds). Output automatically synchronizes to `ComfyUI生图成果/成品图/`.
+Used for upscaling images to 4K (3840px+) while strictly preserving optical camera depth-of-field bokeh (preventing artificial over-sharpening of blurred backgrounds). Output automatically synchronizes to `ComfyUI生图成果/成品图/` (categorized under `全年龄/` or `NSFW/`).
 - **Script**: `scripts/upscale_image.py`
 - **Model**: `4x_foolhardy_Remacri.pth` (with dual-stream gradient-feathered focus fusion)
 - **Usage**:
   ```bash
-  python scripts/upscale_image.py --image "<image_path>" [--target_width 3840] [--target_height 0] [--model "4x_foolhardy_Remacri.pth"]
+  python scripts/upscale_image.py --image "<image_path>" [--target_width 3840] [--target_height 0] [--model "4x_foolhardy_Remacri.pth"] [--nsfw]
   ```
 - **Example**:
   ```bash
@@ -55,11 +55,11 @@ Used for upscaling images to 4K (3840px+) while strictly preserving optical came
   ```
 
 ### Tool 4: Archive Satisfied / Final Masterpiece
-Used for archiving any user-approved, satisfactory image (4K or non-4K) into the dedicated `ComfyUI生图成果/成品图/` gallery.
+Used for archiving any user-approved, satisfactory image (4K or non-4K) into the dedicated `ComfyUI生图成果/成品图/` gallery (subdivided into `全年龄/` and `NSFW/`).
 - **Script**: `scripts/save_finished.py`
 - **Usage**:
   ```bash
-  python scripts/save_finished.py "<image_path_or_filename>" [--alias "<custom_name>"]
+  python scripts/save_finished.py "<image_path_or_filename>" [--alias "<custom_name>"] [--nsfw]
   ```
 
 ---

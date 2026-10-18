@@ -12,6 +12,23 @@ import scipy.ndimage as ndi
 COMFY_HOST = "http://127.0.0.1:8188"
 DEFAULT_MODEL = "4x_foolhardy_Remacri.pth"
 
+NSFW_KEYWORDS = [
+    "nsfw", "nude", "naked", "topless", "bottomless", "pussy", "slit", "vulva",
+    "genitals", "anus", "nipple", "breast", "cleavage", "bareback", "braless",
+    "lingerie", "bikini", "thong", "microbikini", "sheer", "mesh", "lace", "crotch",
+    "boudoir", "gravure", "spreadlegs", "backhips", "sexy", "venus", "sensual",
+    "bath", "69", "pronelie", "shower", "penetration", "vaginal", "pelvic", "busty",
+    "uncensored", "sultry", "macro-slit", "realanatomy",
+    "裸", "全裸", "半裸", "去衣", "脱衣", "私密", "一线天", "阴部", "阴唇",
+    "乳头", "巨乳", "乳晕", "下体", "情趣", "透视", "内衣", "比基尼", "丁字裤"
+]
+
+def is_nsfw(path="", prefix="", flag=False):
+    if flag:
+        return True
+    p = f"{path} {prefix}".lower()
+    return any(k in p for k in NSFW_KEYWORDS)
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Focus-Aware 4K Bokeh-Preserved Upscaler")
     parser.add_argument("--image", required=True, help="Path or filename of the image to upscale")
@@ -20,6 +37,7 @@ def parse_args():
     parser.add_argument("--model", default=DEFAULT_MODEL, help="Upscale model name in ComfyUI")
     parser.add_argument("--prefix", default="4K-Remacri-Bokeh", help="Output prefix")
     parser.add_argument("--disable_bokeh_preserve", action="store_true", help="Disable dual-stream bokeh preservation")
+    parser.add_argument("--nsfw", action="store_true", help="Explicitly mark as NSFW")
     return parser.parse_args()
 
 def main():
@@ -27,25 +45,30 @@ def main():
     comfy_root = r"F:\comfyui\ComfyUI\ComfyUI"
     comfy_input = os.path.join(comfy_root, "input")
     comfy_output = os.path.join(comfy_root, "output")
-    ws_output = r"C:\Users\84021\Desktop\Antigravity\ComfyUI生图成果\生成的图片"
-    finished_output = r"C:\Users\84021\Desktop\Antigravity\ComfyUI生图成果\成品图"
-    os.makedirs(ws_output, exist_ok=True)
-    os.makedirs(finished_output, exist_ok=True)
+    ws_root = r"C:\Users\84021\Desktop\Antigravity\ComfyUI生图成果"
 
-    # 1. Resolve source image
+    # 1. Resolve source image across all subfolders
     src_img = args.image
     if not os.path.exists(src_img):
-        # Check comfy output
-        candidate = os.path.join(comfy_output, src_img)
-        if os.path.exists(candidate):
-            src_img = candidate
-        else:
-            candidate = os.path.join(comfy_input, src_img)
-            if os.path.exists(candidate):
-                src_img = candidate
-            else:
-                print(f"[Error] Source image not found: {args.image}")
-                sys.exit(1)
+        candidates = [
+            os.path.join(comfy_output, src_img),
+            os.path.join(comfy_input, src_img),
+            os.path.join(ws_root, "生成的图片", "全年龄", src_img),
+            os.path.join(ws_root, "生成的图片", "NSFW", src_img),
+            os.path.join(ws_root, "成品图", "全年龄", src_img),
+            os.path.join(ws_root, "成品图", "NSFW", src_img),
+            os.path.join(ws_root, "生成的图片", src_img),
+            os.path.join(ws_root, "成品图", src_img)
+        ]
+        found = False
+        for c in candidates:
+            if os.path.exists(c):
+                src_img = c
+                found = True
+                break
+        if not found:
+            print(f"[Error] Source image not found: {args.image}")
+            sys.exit(1)
 
     filename = os.path.basename(src_img)
     dest_input = os.path.join(comfy_input, filename)
@@ -170,10 +193,18 @@ def main():
         final_path = os.path.join(comfy_output, final_filename)
         final_img.save(final_path)
 
-    # 4. Local Workspace & Finished Archive (4K = Satisfied Masterpiece)
-    shutil.copyfile(final_path, os.path.join(ws_output, os.path.basename(final_path)))
-    shutil.copyfile(final_path, os.path.join(finished_output, os.path.basename(final_path)))
-    print(f"PIPELINE_COMPLETE: {final_path}")
+    # 4. Local Workspace & Finished Archive (4K = Satisfied Masterpiece, SFW/NSFW sorted)
+    category = "NSFW" if is_nsfw(src_img, args.prefix, args.nsfw) else "全年龄"
+    ws_category_dir = os.path.join(ws_root, "生成的图片", category)
+    finished_category_dir = os.path.join(ws_root, "成品图", category)
+    os.makedirs(ws_category_dir, exist_ok=True)
+    os.makedirs(finished_category_dir, exist_ok=True)
+
+    dest_ws = os.path.join(ws_category_dir, os.path.basename(final_path))
+    dest_fin = os.path.join(finished_category_dir, os.path.basename(final_path))
+    shutil.copyfile(final_path, dest_ws)
+    shutil.copyfile(final_path, dest_fin)
+    print(f"PIPELINE_COMPLETE: {final_path} -> [{category}] {dest_fin}")
 
 if __name__ == "__main__":
     main()

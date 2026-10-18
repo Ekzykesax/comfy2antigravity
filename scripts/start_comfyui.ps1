@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory = $false)]
     [string]$ComfyHost = "http://127.0.0.1:8188",
 

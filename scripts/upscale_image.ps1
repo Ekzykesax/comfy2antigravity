@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter(Mandatory = $true, Position = 0)]
     [string]$Image,
 
@@ -15,7 +15,10 @@ param (
     [string]$Prefix = "4K-Remacri-Bokeh",
 
     [Parameter(Mandatory = $false)]
-    [switch]$DisableBokehPreserve
+    [switch]$DisableBokehPreserve,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$NSFW
 )
 
 $ErrorActionPreference = "Stop"
@@ -40,6 +43,9 @@ $cmdArgs = @(
 
 if ($DisableBokehPreserve) {
     $cmdArgs += "--disable_bokeh_preserve"
+}
+if ($NSFW) {
+    $cmdArgs += "--nsfw"
 }
 
 Write-Host "[Upscale] Running Focus-Aware Bokeh-Preserved 4K Upscale: $Image -> ${Width}px..."

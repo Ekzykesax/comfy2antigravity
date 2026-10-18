@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter(Mandatory = $true, Position = 0)]
     [Alias("RefImage", "InputImage")]
     [string]$Image,
@@ -50,7 +50,10 @@ param (
     [string]$Vae = "qwen_image_2.1_vae_bf16.safetensors",
 
     [Parameter(Mandatory = $false)]
-    [string]$WorkspaceDir = ""
+    [string]$WorkspaceDir = "",
+
+    [Parameter(Mandatory = $false)]
+    [switch]$NSFW
 )
 
 $ErrorActionPreference = "Stop"
@@ -99,30 +102,53 @@ if (-not $isOnline) {
     exit 1
 }
 
-# 2. 检查并复制待编辑原图至 ComfyUI input 目录
-if (-not (Test-Path $Image)) {
-    Write-Error "[ImageEdit] Image not found at path: $Image"
-    exit 1
-}
-
+# 2. 检查并解析待编辑原图至 ComfyUI input 目录
 $comfyInputFolder = Join-Path $ComfyRootDir "ComfyUI\input"
 if (-not (Test-Path $comfyInputFolder)) {
     New-Item -ItemType Directory -Force -Path $comfyInputFolder | Out-Null
 }
 
-$imgLeaf = Split-Path -Leaf $Image
+function Resolve-EditSource($p, $ws, $comfyRoot) {
+    if (-not $p -or $p.Trim() -eq "") { return $null }
+    if (Test-Path $p) { return (Resolve-Path $p).Path }
+    $cands = @(
+        (Join-Path $comfyRoot "ComfyUI\input\$p"),
+        (Join-Path $comfyRoot "ComfyUI\output\$p"),
+        (Join-Path $ws "生成的图片\全年龄\$p"),
+        (Join-Path $ws "生成的图片\NSFW\$p"),
+        (Join-Path $ws "生成的图片\$p"),
+        (Join-Path $ws "成品图\全年龄\$p"),
+        (Join-Path $ws "成品图\NSFW\$p"),
+        (Join-Path $ws "参考图\全年龄\$p"),
+        (Join-Path $ws "参考图\NSFW\$p"),
+        (Join-Path $ws "参考图\$p")
+    )
+    foreach ($c in $cands) {
+        if (Test-Path $c) { return (Resolve-Path $c).Path }
+    }
+    return $null
+}
+
+$resolvedImg1 = Resolve-EditSource $Image $WorkspaceDir $ComfyRootDir
+if (-not $resolvedImg1) {
+    Write-Error "[ImageEdit] Image not found at path or candidate directories: $Image"
+    exit 1
+}
+
+$imgLeaf = Split-Path -Leaf $resolvedImg1
 $destInputPath = Join-Path $comfyInputFolder $imgLeaf
-if ((Resolve-Path $Image).Path -ne (Resolve-Path $destInputPath -ErrorAction SilentlyContinue).Path) {
-    Copy-Item -Path $Image -Destination $destInputPath -Force
+if ($resolvedImg1 -ne (Resolve-Path $destInputPath -ErrorAction SilentlyContinue).Path) {
+    Copy-Item -Path $resolvedImg1 -Destination $destInputPath -Force
 }
 Write-Host "[ImageEdit] Target Edit Image (image_1): $imgLeaf"
 
 $secondImgLeaf = ""
-if ($SecondImage -and (Test-Path $SecondImage)) {
-    $secondImgLeaf = Split-Path -Leaf $SecondImage
+$resolvedImg2 = Resolve-EditSource $SecondImage $WorkspaceDir $ComfyRootDir
+if ($resolvedImg2) {
+    $secondImgLeaf = Split-Path -Leaf $resolvedImg2
     $destInputPath2 = Join-Path $comfyInputFolder $secondImgLeaf
-    if ((Resolve-Path $SecondImage).Path -ne (Resolve-Path $destInputPath2 -ErrorAction SilentlyContinue).Path) {
-        Copy-Item -Path $SecondImage -Destination $destInputPath2 -Force
+    if ($resolvedImg2 -ne (Resolve-Path $destInputPath2 -ErrorAction SilentlyContinue).Path) {
+        Copy-Item -Path $resolvedImg2 -Destination $destInputPath2 -Force
     }
     Write-Host "[ImageEdit] Second Reference Image (image_2): $secondImgLeaf"
 }
@@ -251,19 +277,23 @@ if (-not $completedFile) {
     exit 1
 }
 
-# 5. 自动归档至工作区
+# 5. 自动归档至工作区（区分 全年龄 / NSFW）
 $sourcePath = Join-Path "$ComfyRootDir\ComfyUI\output" $completedFile
-$archiveDir = Join-Path $WorkspaceDir $outputFolderName
+$nsfwPattern = "(?i)(nsfw|nude|naked|topless|bottomless|pussy|slit|vulva|genitals|anus|nipple|breast|cleavage|bareback|braless|lingerie|bikini|thong|microbikini|sheer|mesh|lace|crotch|boudoir|gravure|spreadlegs|backhips|sexy|venus|sensual|bath|69|pronelie|shower|penetration|vaginal|pelvic|busty|uncensored|sultry|macro-slit|realanatomy|裸|全裸|半裸|去衣|脱衣|私密|一线天|阴部|阴唇|乳头|巨乳|乳晕|下体|情趣|透视|内衣|比基尼|丁字裤)"
+$isNsfw = $NSFW -or ($Prompt -match $nsfwPattern) -or ($resolvedImg1 -match "NSFW")
+$category = if ($isNsfw) { "NSFW" } else { "全年龄" }
+$archiveDir = Join-Path (Join-Path $WorkspaceDir $outputFolderName) $category
 if (!(Test-Path $archiveDir)) {
     New-Item -ItemType Directory -Force -Path $archiveDir | Out-Null
 }
 $destPath = Join-Path $archiveDir $completedFile
 Copy-Item -Path $sourcePath -Destination $destPath -Force
-Write-Host "[ImageEdit] Final output archived to: $destPath"
+Write-Host "[ImageEdit] Final output archived to [$category]: $destPath"
 
 [PSCustomObject]@{
     PromptId = $promptId
     Filename = $completedFile
+    Category = $category
     Seed = $Seed
     Steps = $Steps
     Cfg = $Cfg

@@ -16,9 +16,11 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
   - 输入参考图目录：`<ComfyRootDir>/input/`
   - 生成图片输出目录：`<ComfyRootDir>/output/`
 - **工作区成果归档目录**：`<当前工作区>/ComfyUI生图成果/` (可通过 `-WorkspaceDir` 指定)
-  - `成品图/`：**满意成品专库**（4K 极清超分大图自动归档直通；亦收录用户认可的满意非 4K 作品）
-  - `生成的图片/`：常规生图及过程图归档
-  - `参考图/`：官方素材与参考卡面归档
+  - `成品图/`：**满意成品专库**（超分 4K 自动直通；非 4K 满意作品亦可收录）
+    - `全年龄/`：精选壁纸、插画终稿
+    - `NSFW/`：精选成人写真与私密福利作品
+  - `生成的图片/`：常规生图及过程图归档（内置 `全年龄/` 与 `NSFW/` 分流）
+  - `参考图/`：官方素材与参考卡面归档（内置 `全年龄/` 与 `NSFW/` 分流）
   - `配置与工作流/`：执行脚本与工作流 JSON
 - **核心模型组合与 Hugging Face 官方/社区下载地址（8GB显存优化）**：
   - Diffusion: `NoctQ_V4_int8_convrot.safetensors` -> [Noctaluna/Noct-Q-Uncensored-Qwen-Image-2.1](https://huggingface.co/Noctaluna/Noct-Q-Uncensored-Qwen-Image-2.1) (结构与微观画质特化主模型)
@@ -193,10 +195,10 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   -Width 3840 `
   -Prefix "Alice-SnowVillage-4K"
 ```
-> **自动直通「成品图」库**：超分 4K 默认代表满意，超分完成后将同时自动归档一份至 `ComfyUI生图成果/成品图/` 目录。
+> **自动直通「成品图」库**：超分 4K 默认代表满意，超分完成后将同时自动归档一份至 `ComfyUI生图成果/成品图/` 对应的 `全年龄/` 或 `NSFW/` 目录。支持通过 `-NSFW` 参数显式指定分类。
 
 ### 6. 满意作品手动归档管线 (成品图收录)
-对于非 4K 但满意的生成作品（如 2K 阶段成果、立绘设计），可直接一键归入成品图专库：
+对于非 4K 但满意的生成作品（如 2K 阶段成果、立绘设计），可直接一键归入成品图专库（支持智能或手动指定 `-NSFW` 分类）：
 ```powershell
 powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\save_finished.ps1" `
   -Image "Saber-Canonical-Takeuchi-2K_00001_.png"

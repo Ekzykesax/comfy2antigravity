@@ -39,6 +39,42 @@ def find_comfy_root():
             return c
     return candidates[0]
 
+NSFW_KEYWORDS = [
+    "nsfw", "nude", "naked", "topless", "bottomless", "pussy", "slit", "vulva",
+    "genitals", "anus", "nipple", "breast", "cleavage", "bareback", "braless",
+    "lingerie", "bikini", "thong", "microbikini", "sheer", "mesh", "lace", "crotch",
+    "boudoir", "gravure", "spreadlegs", "backhips", "sexy", "venus", "sensual",
+    "bath", "69", "pronelie", "shower", "penetration", "vaginal", "pelvic", "busty",
+    "uncensored", "sultry", "macro-slit", "realanatomy",
+    "裸", "全裸", "半裸", "去衣", "脱衣", "私密", "一线天", "阴部", "阴唇",
+    "乳头", "巨乳", "乳晕", "下体", "情趣", "透视", "内衣", "比基尼", "丁字裤"
+]
+
+def is_nsfw(prompt="", flag=False):
+    if flag:
+        return True
+    p = prompt.lower()
+    return any(k in p for k in NSFW_KEYWORDS)
+
+def resolve_reference(ref_path, comfy_input):
+    if not ref_path:
+        return ""
+    if os.path.isfile(ref_path):
+        return os.path.abspath(ref_path)
+    ws_root = os.getcwd()
+    candidates = [
+        os.path.join(comfy_input, ref_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "参考图", ref_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "参考图", "全年龄", ref_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "参考图", "NSFW", ref_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "生成的图片", "全年龄", ref_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "生成的图片", "NSFW", ref_path),
+    ]
+    for c in candidates:
+        if os.path.isfile(c):
+            return os.path.abspath(c)
+    return ""
+
 def main():
     parser = argparse.ArgumentParser(description="ComfyUI Image Generation CLI (DeepSeek Harness & Codex compatible)")
     parser.add_argument("--prompt", "-p", required=True, help="Text prompt for image generation")
@@ -56,6 +92,7 @@ def main():
     parser.add_argument("--clip", default="qwen3vl_8b_nvfp4.safetensors", help="Text/vision CLIP encoder")
     parser.add_argument("--vae", default="qwen_image_2.1_vae_bf16.safetensors", help="VAE model")
     parser.add_argument("--lora", default="Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors", help="Turbo LoRA model")
+    parser.add_argument("--nsfw", action="store_true", help="Explicitly classify output under NSFW")
     parser.add_argument("--output-dir", default="", help="Output archive directory")
 
     args = parser.parse_args()
@@ -73,18 +110,20 @@ def main():
 
     # 2. Handle reference images
     ref1_leaf = ""
-    if args.ref_image and os.path.isfile(args.ref_image):
-        ref1_leaf = os.path.basename(args.ref_image)
+    resolved_ref1 = resolve_reference(args.ref_image, input_folder)
+    if resolved_ref1:
+        ref1_leaf = os.path.basename(resolved_ref1)
         dest1 = os.path.join(input_folder, ref1_leaf)
-        if os.path.abspath(args.ref_image) != os.path.abspath(dest1):
-            shutil.copyfile(args.ref_image, dest1)
+        if os.path.abspath(resolved_ref1) != os.path.abspath(dest1):
+            shutil.copyfile(resolved_ref1, dest1)
 
     ref2_leaf = ""
-    if args.ref_image2 and os.path.isfile(args.ref_image2):
-        ref2_leaf = os.path.basename(args.ref_image2)
+    resolved_ref2 = resolve_reference(args.ref_image2, input_folder)
+    if resolved_ref2:
+        ref2_leaf = os.path.basename(resolved_ref2)
         dest2 = os.path.join(input_folder, ref2_leaf)
-        if os.path.abspath(args.ref_image2) != os.path.abspath(dest2):
-            shutil.copyfile(args.ref_image2, dest2)
+        if os.path.abspath(resolved_ref2) != os.path.abspath(dest2):
+            shutil.copyfile(resolved_ref2, dest2)
 
     # 3. Build prompt graph
     prompt_dict = {
@@ -185,9 +224,10 @@ def main():
         sys.stderr.write(f"[generate.py] Error: Generation timed out after {timeout}s\n")
         sys.exit(1)
 
-    # 6. Archive to workspace
+    # 6. Archive to workspace with automatic SFW / NSFW categorization
     source_path = os.path.join(comfy_root, "ComfyUI", "output", completed_file)
-    output_dir = args.output_dir or os.path.join(os.getcwd(), "ComfyUI生图成果", "生成的图片")
+    category = "NSFW" if is_nsfw(args.prompt, args.nsfw) else "全年龄"
+    output_dir = args.output_dir or os.path.join(os.getcwd(), "ComfyUI生图成果", "生成的图片", category)
     os.makedirs(output_dir, exist_ok=True)
     dest_path = os.path.join(output_dir, completed_file)
     if os.path.isfile(source_path):
@@ -198,6 +238,7 @@ def main():
         "status": "success",
         "prompt_id": prompt_id,
         "filename": completed_file,
+        "category": category,
         "seed": seed,
         "source_path": source_path,
         "workspace_path": dest_path,

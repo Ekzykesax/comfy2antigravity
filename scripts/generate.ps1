@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter(Mandatory = $true)]
     [string]$Prompt,
 
@@ -63,7 +63,10 @@ param (
     [string]$Scheduler = "simple",
 
     [Parameter(Mandatory = $false)]
-    [string]$WorkspaceDir = ""
+    [string]$WorkspaceDir = "",
+
+    [Parameter(Mandatory = $false)]
+    [switch]$NSFW
 )
 
 $ErrorActionPreference = "Stop"
@@ -212,30 +215,31 @@ function Process-RefImageFile($imgPath, $maxDim, $comfyRoot, $wsDir, $refFldr) {
         New-Item -ItemType Directory -Force -Path $destInputFolder | Out-Null
     }
 
-    if (Test-Path $imgPath) {
-        $refName = Split-Path -Leaf $imgPath
-        $destInput = Join-Path $destInputFolder $refName
-        $refArchiveDir = Join-Path $wsDir $refFldr
-        if (!(Test-Path $refArchiveDir)) {
-            New-Item -ItemType Directory -Force -Path $refArchiveDir | Out-Null
+    $resolvedPath = $imgPath
+    if (-not (Test-Path $resolvedPath)) {
+        $cands = @(
+            (Join-Path $destInputFolder $imgPath),
+            (Join-Path $wsDir (Join-Path $refFldr $imgPath)),
+            (Join-Path $wsDir (Join-Path $refFldr (Join-Path "全年龄" $imgPath))),
+            (Join-Path $wsDir (Join-Path $refFldr (Join-Path "NSFW" $imgPath))),
+            (Join-Path $wsDir (Join-Path "生成的图片" (Join-Path "全年龄" $imgPath))),
+            (Join-Path $wsDir (Join-Path "生成的图片" (Join-Path "NSFW" $imgPath)))
+        )
+        foreach ($c in $cands) {
+            if (Test-Path $c) {
+                $resolvedPath = $c
+                break
+            }
         }
-        $destRefArchive = Join-Path $refArchiveDir $refName
+    }
 
-        Save-OptimizedImage $imgPath $destInput $maxDim
-        if ($imgPath -ne $destRefArchive) {
-            Copy-Item -Path $destInput -Destination $destRefArchive -Force
-        }
-        if (Test-Path $imgPath) {
-            Save-OptimizedImage $imgPath $imgPath $maxDim
-        }
+    if (Test-Path $resolvedPath) {
+        $refName = Split-Path -Leaf $resolvedPath
+        $destInput = Join-Path $destInputFolder $refName
+        Save-OptimizedImage $resolvedPath $destInput $maxDim
         return $refName
     } else {
-        $refName = $imgPath
-        $destInput = Join-Path $destInputFolder $refName
-        if (Test-Path $destInput) {
-            Save-OptimizedImage $destInput $destInput $maxDim
-        }
-        return $refName
+        return $imgPath
     }
 }
 
@@ -455,20 +459,24 @@ if (-not $completedFile) {
     exit 1
 }
 
-# 8. Copy to Workspace Archive
+# 8. Copy to Workspace Archive with SFW / NSFW categorization
 $sourcePath = Join-Path "$ComfyRootDir\ComfyUI\output" $completedFile
-$archiveDir = Join-Path $WorkspaceDir $outputFolderName
+$nsfwPattern = "(?i)(nsfw|nude|naked|topless|bottomless|pussy|slit|vulva|genitals|anus|nipple|breast|cleavage|bareback|braless|lingerie|bikini|thong|microbikini|sheer|mesh|lace|crotch|boudoir|gravure|spreadlegs|backhips|sexy|venus|sensual|bath|69|pronelie|shower|penetration|vaginal|pelvic|busty|uncensored|sultry|macro-slit|realanatomy|裸|全裸|半裸|去衣|脱衣|私密|一线天|阴部|阴唇|乳头|巨乳|乳晕|下体|情趣|透视|内衣|比基尼|丁字裤)"
+$isNsfw = $NSFW -or ($Prompt -match $nsfwPattern)
+$category = if ($isNsfw) { "NSFW" } else { "全年龄" }
+$archiveDir = Join-Path (Join-Path $WorkspaceDir $outputFolderName) $category
 if (!(Test-Path $archiveDir)) {
     New-Item -ItemType Directory -Force -Path $archiveDir | Out-Null
 }
 $destPath = Join-Path $archiveDir $completedFile
 Copy-Item -Path $sourcePath -Destination $destPath -Force
-Write-Host "[ComfyUI] Saved to workspace: $destPath"
+Write-Host "[ComfyUI] Saved to workspace [$category]: $destPath"
 
 # 9. Output summary JSON
 $result = [PSCustomObject]@{
     PromptId = $promptId
     Filename = $completedFile
+    Category = $category
     Seed = $Seed
     Width = $Width
     Height = $Height

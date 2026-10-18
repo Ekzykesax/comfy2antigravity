@@ -39,6 +39,46 @@ def find_comfy_root():
             return c
     return candidates[0]
 
+NSFW_KEYWORDS = [
+    "nsfw", "nude", "naked", "topless", "bottomless", "pussy", "slit", "vulva",
+    "genitals", "anus", "nipple", "breast", "cleavage", "bareback", "braless",
+    "lingerie", "bikini", "thong", "microbikini", "sheer", "mesh", "lace", "crotch",
+    "boudoir", "gravure", "spreadlegs", "backhips", "sexy", "venus", "sensual",
+    "bath", "69", "pronelie", "shower", "penetration", "vaginal", "pelvic", "busty",
+    "uncensored", "sultry", "macro-slit", "realanatomy",
+    "裸", "全裸", "半裸", "去衣", "脱衣", "私密", "一线天", "阴部", "阴唇",
+    "乳头", "巨乳", "乳晕", "下体", "情趣", "透视", "内衣", "比基尼", "丁字裤"
+]
+
+def is_nsfw(prompt="", path="", flag=False):
+    if flag:
+        return True
+    p = f"{prompt} {path}".lower()
+    return any(k in p for k in NSFW_KEYWORDS)
+
+def resolve_image_path(img_path, comfy_input="", comfy_output=""):
+    if not img_path:
+        return ""
+    if os.path.isfile(img_path):
+        return os.path.abspath(img_path)
+    ws_root = os.getcwd()
+    candidates = [
+        os.path.join(comfy_input, img_path),
+        os.path.join(comfy_output, img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "生成的图片", "全年龄", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "生成的图片", "NSFW", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "生成的图片", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "成品图", "全年龄", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "成品图", "NSFW", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "参考图", "全年龄", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "参考图", "NSFW", img_path),
+        os.path.join(ws_root, "ComfyUI生图成果", "参考图", img_path),
+    ]
+    for c in candidates:
+        if os.path.isfile(c):
+            return os.path.abspath(c)
+    return ""
+
 def main():
     parser = argparse.ArgumentParser(description="Universal High-Fidelity Image Editing CLI (DeepSeek Harness & Codex compatible)")
     parser.add_argument("--image", "-i", required=True, help="Target image path to edit")
@@ -54,6 +94,7 @@ def main():
     parser.add_argument("--unet", default="NoctQ_V4_int8_convrot.safetensors", help="Diffusion UNet model")
     parser.add_argument("--clip", default="qwen3vl_8b_nvfp4.safetensors", help="Text/vision CLIP encoder")
     parser.add_argument("--vae", default="qwen_image_2.1_vae_bf16.safetensors", help="VAE model")
+    parser.add_argument("--nsfw", action="store_true", help="Classify output under NSFW")
     parser.add_argument("--output-dir", default="", help="Output archive directory")
 
     args = parser.parse_args()
@@ -63,28 +104,31 @@ def main():
         sys.stderr.write(f"[edit_image.py] Error: ComfyUI server offline at {args.comfy_host}\n")
         sys.exit(1)
 
-    if not os.path.isfile(args.image):
-        sys.stderr.write(f"[edit_image.py] Error: Target image not found: {args.image}\n")
-        sys.exit(1)
-
     comfy_root = find_comfy_root()
     input_folder = os.path.join(comfy_root, "ComfyUI", "input")
+    output_folder = os.path.join(comfy_root, "ComfyUI", "output")
     os.makedirs(input_folder, exist_ok=True)
+
+    resolved_img1 = resolve_image_path(args.image, input_folder, output_folder)
+    if not resolved_img1:
+        sys.stderr.write(f"[edit_image.py] Error: Target image not found: {args.image}\n")
+        sys.exit(1)
 
     seed = args.seed if args.seed > 0 else random.randint(10000000000000, 99999999999999)
 
     # 2. Copy image to input folder
-    img1_leaf = os.path.basename(args.image)
+    img1_leaf = os.path.basename(resolved_img1)
     dest1 = os.path.join(input_folder, img1_leaf)
-    if os.path.abspath(args.image) != os.path.abspath(dest1):
-        shutil.copyfile(args.image, dest1)
+    if os.path.abspath(resolved_img1) != os.path.abspath(dest1):
+        shutil.copyfile(resolved_img1, dest1)
 
     img2_leaf = ""
-    if args.second_image and os.path.isfile(args.second_image):
-        img2_leaf = os.path.basename(args.second_image)
+    resolved_img2 = resolve_image_path(args.second_image, input_folder, output_folder)
+    if resolved_img2:
+        img2_leaf = os.path.basename(resolved_img2)
         dest2 = os.path.join(input_folder, img2_leaf)
-        if os.path.abspath(args.second_image) != os.path.abspath(dest2):
-            shutil.copyfile(args.second_image, dest2)
+        if os.path.abspath(resolved_img2) != os.path.abspath(dest2):
+            shutil.copyfile(resolved_img2, dest2)
 
     # 3. Construct native 25-step image edit prompt graph (NO turbo LoRA, Latent directly anchored)
     prompt_dict = {
@@ -158,9 +202,10 @@ def main():
         sys.stderr.write(f"[edit_image.py] Error: Image edit timed out after {timeout}s\n")
         sys.exit(1)
 
-    # 6. Archive output
+    # 6. Archive output with SFW / NSFW categorization
     source_path = os.path.join(comfy_root, "ComfyUI", "output", completed_file)
-    output_dir = args.output_dir or os.path.join(os.getcwd(), "ComfyUI生图成果", "生成的图片")
+    category = "NSFW" if is_nsfw(args.prompt, resolved_img1, args.nsfw) else "全年龄"
+    output_dir = args.output_dir or os.path.join(os.getcwd(), "ComfyUI生图成果", "生成的图片", category)
     os.makedirs(output_dir, exist_ok=True)
     dest_path = os.path.join(output_dir, completed_file)
     if os.path.isfile(source_path):
@@ -171,6 +216,7 @@ def main():
         "status": "success",
         "prompt_id": prompt_id,
         "filename": completed_file,
+        "category": category,
         "seed": seed,
         "steps": args.steps,
         "cfg": args.cfg,
