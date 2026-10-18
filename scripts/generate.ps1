@@ -24,10 +24,10 @@ param (
     [string]$NegativePrompt = "(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation",
 
     [Parameter(Mandatory = $false)]
-    [int]$Resolution = 1024,
+    [int]$Resolution = 0,
 
     [Parameter(Mandatory = $false)]
-    [int]$MaxRefDimension = 1024,
+    [int]$MaxRefDimension = 768,
 
     [Parameter(Mandatory = $false)]
     [long]$Seed = 0,
