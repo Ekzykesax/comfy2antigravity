@@ -1,0 +1,40 @@
+{
+  "name": "comfy2antigravity",
+  "version": "1.0.0",
+  "description": "ComfyUI image generation and universal editing plugin for AI agents (DeepSeek Harness, Codex, Antigravity)",
+  "main": "scripts/generate.py",
+  "bin": {
+    "comfy-gen": "./scripts/generate.py",
+    "comfy-edit": "./scripts/edit_image.py"
+  },
+  "scripts": {
+    "generate": "python scripts/generate.py",
+    "edit": "python scripts/edit_image.py"
+  },
+  "dsh": {
+    "type": "plugin",
+    "name": "comfy2antigravity",
+    "tools": [
+      {
+        "name": "comfy_generate",
+        "description": "Generate images via ComfyUI using text prompts or reference images.",
+        "command": "python scripts/generate.py --prompt \"{prompt}\""
+      },
+      {
+        "name": "comfy_edit",
+        "description": "Universal high-fidelity image editing via ComfyUI (outfit changes, hairstyle, posture, background).",
+        "command": "python scripts/edit_image.py --image \"{image}\" --prompt \"{prompt}\""
+      }
+    ]
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "codex-tool",
+    "antigravity-skill",
+    "comfyui",
+    "qwen-image"
+  ],
+  "author": "Ekzykesax",
+  "license": "Apache-2.0"
+}

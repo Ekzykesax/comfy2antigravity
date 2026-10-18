@@ -172,5 +172,8 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
 
 > **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。
 
+> 💡 **跨平台与多 Agent 兼容**：所有脚本均提供对等的纯标准库跨平台 Python CLI（`scripts/generate.py`、`scripts/edit_image.py`），原生适配 **DeepSeek Harness (`dsh`)** 与 **OpenAI Codex** 环境，规范详见 [`AGENTS.md`](AGENTS.md)。
+
+
 
 
