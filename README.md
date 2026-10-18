@@ -9,8 +9,9 @@ ComfyUI 本地图像生成与编辑调度技能，适用于 Google Antigravity�
 既支持调用任意自定义 ComfyUI 工作流（SD1.5 / SDXL / Flux / 导出 API JSON），也内置了一套基于 Qwen-Image 2.1 架构的文生图、参考图生图与通用图像编辑管线。
 
 <p align="center">
-  <img src="assets/demo_ui.png" alt="工作流演示" width="100%">
+  <img src="assets/demo_ui.png" alt="工作流演示" width="800">
 </p>
+
 
 ---
 
