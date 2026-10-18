@@ -42,7 +42,7 @@ Used for modifying existing images: changing outfits, altering hairstyles, modif
   ```
 
 ### Tool 3: 4K Focus-Aware Bokeh-Preserving Upscale
-Used for upscaling images to 4K (3840px+) while strictly preserving optical camera depth-of-field bokeh (preventing artificial over-sharpening of blurred backgrounds).
+Used for upscaling images to 4K (3840px+) while strictly preserving optical camera depth-of-field bokeh (preventing artificial over-sharpening of blurred backgrounds). Output automatically synchronizes to `ComfyUI生图成果/成品图/`.
 - **Script**: `scripts/upscale_image.py`
 - **Model**: `4x_foolhardy_Remacri.pth` (with dual-stream gradient-feathered focus fusion)
 - **Usage**:
@@ -52,6 +52,14 @@ Used for upscaling images to 4K (3840px+) while strictly preserving optical came
 - **Example**:
   ```bash
   python scripts/upscale_image.py --image "output/portrait.png" --target_width 3840
+  ```
+
+### Tool 4: Archive Satisfied / Final Masterpiece
+Used for archiving any user-approved, satisfactory image (4K or non-4K) into the dedicated `ComfyUI生图成果/成品图/` gallery.
+- **Script**: `scripts/save_finished.py`
+- **Usage**:
+  ```bash
+  python scripts/save_finished.py "<image_path_or_filename>" [--alias "<custom_name>"]
   ```
 
 ---

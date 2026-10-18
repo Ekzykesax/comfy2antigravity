@@ -28,7 +28,9 @@ def main():
     comfy_input = os.path.join(comfy_root, "input")
     comfy_output = os.path.join(comfy_root, "output")
     ws_output = r"C:\Users\84021\Desktop\Antigravity\ComfyUI生图成果\生成的图片"
+    finished_output = r"C:\Users\84021\Desktop\Antigravity\ComfyUI生图成果\成品图"
     os.makedirs(ws_output, exist_ok=True)
+    os.makedirs(finished_output, exist_ok=True)
 
     # 1. Resolve source image
     src_img = args.image
@@ -168,8 +170,9 @@ def main():
         final_path = os.path.join(comfy_output, final_filename)
         final_img.save(final_path)
 
-    # 4. Local Workspace & Brain Archive
+    # 4. Local Workspace & Finished Archive (4K = Satisfied Masterpiece)
     shutil.copyfile(final_path, os.path.join(ws_output, os.path.basename(final_path)))
+    shutil.copyfile(final_path, os.path.join(finished_output, os.path.basename(final_path)))
     print(f"PIPELINE_COMPLETE: {final_path}")
 
 if __name__ == "__main__":

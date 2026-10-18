@@ -16,7 +16,8 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
   - 输入参考图目录：`<ComfyRootDir>/input/`
   - 生成图片输出目录：`<ComfyRootDir>/output/`
 - **工作区成果归档目录**：`<当前工作区>/ComfyUI生图成果/` (可通过 `-WorkspaceDir` 指定)
-  - `生成的图片/`：产出图最终归档
+  - `成品图/`：**满意成品专库**（4K 极清超分大图自动归档直通；亦收录用户认可的满意非 4K 作品）
+  - `生成的图片/`：常规生图及过程图归档
   - `参考图/`：官方素材与参考卡面归档
   - `配置与工作流/`：执行脚本与工作流 JSON
 - **核心模型组合与 Hugging Face 官方/社区下载地址（8GB显存优化）**：
@@ -192,10 +193,18 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   -Width 3840 `
   -Prefix "Alice-SnowVillage-4K"
 ```
+> **自动直通「成品图」库**：超分 4K 默认代表满意，超分完成后将同时自动归档一份至 `ComfyUI生图成果/成品图/` 目录。
+
+### 6. 满意作品手动归档管线 (成品图收录)
+对于非 4K 但满意的生成作品（如 2K 阶段成果、立绘设计），可直接一键归入成品图专库：
+```powershell
+powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\save_finished.ps1" `
+  -Image "Saber-Canonical-Takeuchi-2K_00001_.png"
+```
 
 > **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。超分管线默认全面开启焦外保真，杜绝死锐假噪点。
 
-> 💡 **跨平台与多 Agent 兼容**：所有脚本均提供对等的纯标准库跨平台 Python CLI（`scripts/generate.py`、`scripts/edit_image.py`），原生适配 **DeepSeek Harness (`dsh`)** 与 **OpenAI Codex** 环境，规范详见 [`AGENTS.md`](AGENTS.md)。
+> 💡 **跨平台与多 Agent 兼容**：所有脚本均提供对等的纯标准库跨平台 Python CLI（`scripts/generate.py`、`scripts/edit_image.py`、`scripts/save_finished.py`），原生适配 **DeepSeek Harness (`dsh`)** 与 **OpenAI Codex** 环境，规范详见 [`AGENTS.md`](AGENTS.md)。
 
 
 
