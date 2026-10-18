@@ -4,9 +4,12 @@ ComfyUI 本地图像生成与编辑调度技能，适用于 Google Antigravity�
 
 [![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfy2antigravity)
 [![ComfyUI](https://img.shields.io/badge/Backend-ComfyUI-orange.svg)](https://github.com/comfyanonymous/ComfyUI)
+[![ComfyUI-Zero_Config](https://img.shields.io/badge/ComfyUI-Zero__Config-success.svg)]()
 [![License-Apache_2.0](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg)](LICENSE)
 
-既支持调用任意自定义 ComfyUI 工作流（SD1.5 / SDXL / Flux / 导出 API JSON），也内置了一套基于 Qwen-Image 2.1 架构的文生图、参考图生图与通用图像编辑管线。
+将强大的本地 ComfyUI 图像能力封装为**零操作门槛**的交互体验：**无需手动连线、无需配置复杂节点图、无需手动调参**。用户完全不必接触 ComfyUI 繁琐的画布，只需在 Antigravity 聊天框中用自然语言表达想法，技能即可全自动完成服务唤醒、节点动态编排、多模态槽位映射、采样渲染与成果归档。
+
+既内置了开箱即用的高保真文生图、参考图生图与通用图像编辑管线（基于 Qwen-Image 2.1 架构），也支持无缝执行任意自定义导出的 ComfyUI API JSON 工作流。
 
 <p align="center">
   <img src="assets/demo_ui.png" alt="工作流演示" width="800">
@@ -17,12 +20,16 @@ ComfyUI 本地图像生成与编辑调度技能，适用于 Google Antigravity�
 
 ## 功能特性
 
-1. **多模态参考图一致性**：支持单图或双图参考输入（`images.image_1` / `images.image_2`），当提示词指定特定角色或物品时，支持自动检索并接入参考图，结合关注点分离原则保持人物特征一致。
-2. **双采样方案按需分工**：
+1. **零 ComfyUI 操作门槛（免连线、免调参）**：
+   - 传统 ComfyUI 令人望而生畏的连线地狱、复杂节点组合与参数调试全部由底层脚本自动接管；
+   - 自动处理多模态张量规范（如 `images.image_1` / `images.image_2` 槽位映射），杜绝常见布尔歧义报错，用户侧仅需自然语言交互。
+2. **多模态参考图一致性**：支持单图或双图参考输入，当提示词指定特定角色或物品时，支持自动检索并接入参考图，结合关注点分离原则保持人物特征一致。
+3. **双采样方案按需分工**：
    - **文生图 / 参考生图（构图创作）**：采用 Viggle Turbo 8 步加速（Euler / Simple, CFG 1.0），空 Latent 随机扩散，约 40 秒快速出图。
    - **通用图像编辑（高保真原图锚定）**：采用官方原生 25 步采样，不加载加速 LoRA，`resolution = 0` 继承原图尺寸，直承原图 Latent，实现未修改区域（背景、光影、五官）1:1 锚定。
-3. **服务状态检测与自启**：执行生图前自动探测 ComfyUI API 连通性，若未启动则自动后台拉起，无需手动开启终端。
-4. **图像预处理与自动归档**：输入参考图自动预缩放至长边 1024 像素内减少显存占用；生成结果自动归档至工作区 `ComfyUI生图成果/` 目录。
+4. **服务状态检测与自启**：执行生图前自动探测 ComfyUI API 连通性，若未启动则自动后台拉起，无需手动开启终端。
+5. **图像预处理与自动归档**：输入参考图自动预缩放至长边 1024 像素内减少显存占用；生成结果自动归档至工作区 `ComfyUI生图成果/` 目录。
+
 
 ---
 
