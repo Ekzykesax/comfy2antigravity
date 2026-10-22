@@ -12,6 +12,17 @@ ComfyUI 本地图像生成与高保真编辑插件，专为 **Antigravity**、**
 
 既内置了开箱即用的高保真文生图、参考图生图与通用图像编辑管线（基于 Qwen-Image 2.1 架构），也支持无缝执行任意自定义导出的 ComfyUI API JSON 工作流。
 
+---
+
+## 🌟 标杆成果展示 (Masterpiece Showcases)
+
+> **实景二次元融合 · 油画级光影雕塑 · 4K/8K 景深保真超分**
+
+| **京都岚山渡月桥 · Saber (8K/4K 标杆)** | **河口湖罗森便利店 · Saber (4K 标杆)** |
+| :---: | :---: |
+| <img src="assets/showcase_togetsukyo_saber.jpg" alt="京都渡月桥 Saber" width="450"> | <img src="assets/showcase_lawson_fuji.jpg" alt="河口湖罗森富士山 Saber" width="450"> |
+| **8K/4K 渡月桥常服 Saber**<br>金色逆光轮廓 + 织物阴影体积感 + 纯正 2D 面容 + 奶油级光学景深散景 | **4K 富士山罗森 Saber**<br>纯正长焦压缩感 + 街头实景材质 + 灵动神韵融合 |
+
 <p align="center">
   <img src="assets/demo_ui.png" alt="工作流演示" width="800">
 </p>
@@ -132,18 +143,36 @@ git clone https://github.com/Ekzykesax/comfy2antigravity.git
     python scripts/edit_image.py --image "person.jpg" --second-image "dress.png" --prompt "将图1中人物的服装替换为图2中的款式与材质，人物长相与背景保持不变"
     ```
 
-### 4. 4K 景深保真极清超分（Remacri + Bokeh Preservation）
-解决常规超分无脑锐化背景虚化的硬伤，主体保持 4K 极清，背景保持大光圈自然光学奶油虚化。
+### 4. 4K/8K 景深保真极清超分（Remacri + Bokeh Preservation）
+解决常规超分无脑锐化背景虚化的硬伤，主体保持 4K/8K 极清，背景保持大光圈自然光学奶油虚化。
 
-- **自然语言**：“把生成的图片超分到 4K，保留自然的背景景深虚化。”
+- **自然语言**：“把生成的图片超分到 4K（或 8K），保留自然的背景景深虚化。”
 - **Python CLI (跨平台 / DeepSeek Harness / Codex)**：
   ```bash
+  # 4K 超分
   python scripts/upscale_image.py --image "output/portrait.png" --target_width 3840
+
+  # 8K 极限超分 (3300万像素)
+  python scripts/upscale_image.py --image "output/portrait.png" --target_width 7680
   ```
 - **PowerShell (Windows)**：
   ```powershell
   powershell -ExecutionPolicy Bypass -File "scripts/upscale_image.ps1" -Image "output/portrait.png" -Width 3840
   ```
+
+### 5. 黄金推荐用法：实景二次元融合 + 油画光影雕塑 (Golden Paradigm)
+专为解决“二次元角色融入实景照片”常见的两大硬伤而设计：**彻底杜绝 3D 塑料假人感，彻底杜绝死板平面的纸片贴图感**。
+
+#### 💡 推荐提示词配方（Prompt Recipe）：
+- **自然语言指令推荐**：
+  > “画面中的人物长相与画风严格与图1保持一致，背景与构图严格还原图2中的实景。[写实油画般的光影雕塑]：明亮清澈的环境光，柔和通透的侧逆轮廓光(`glowing rim light on hair and shoulders`)勾勒出发丝晶莹剔透的高光轮廓，衣物褶皱具备深邃立体的多层环境闭塞阴影与微弱反光(`sculpted folds, realistic ambient occlusion and fabric reflections, rich painterly chiaroscuro, volumetric lighting`)，面容立体饱满、光影通透，既保留纯正日漫灵动神韵，又具备油画般的厚重体积感与真实反光，绝无油腻塑料假人皮质。严格禁止黑色描边(`no black outlines, lineless soft edge integration`)，背景单反大光圈光学浅景深散景虚化(`cinematic optical bokeh on background, creamy soft bokeh`)。定调核心：`anime character seamlessly blended into real photographic background, oil painting cinematic lighting depth, masterpiece, highest quality.`”
+- **黄金负向防御词库**：
+  > `flat 2d, overly flat, boring flat coloring, paper cut out, (3d uncanny, 3d render doll, plastic skin, cgi, 3d model, blender render, octane render, wax figure:1.6), (heavy black outline, thick black lineart, dark outline, black borders, sticker outline, hard black edge:1.6), center framing, stiff pose, deformed, bad anatomy, wrong anatomy, extra limb, missing limb, mutation, blurry, artifacts`
+
+- **生产管线三步走**：
+  1. **1M 快速定稿**（构图与姿态确认）；
+  2. **锁定 Seed 跑 3M 原生底图**（2304×1280，25步原生采样收敛原生发丝与眼眸细节）；
+  3. **Remacri 景深保真双流超分 4K / 8K**（焦内极清提升，焦外保留单反奶油级虚化）。
 
 ---
 

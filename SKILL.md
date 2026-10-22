@@ -98,6 +98,14 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
 - 告别千篇一律的固定尺寸，根据具体生图画面的题材与构图需求智能匹配最佳分辨率（总像素稳定在 100 万级最优生成甜点区）：
   - **横向宽幅 / 电影感全景 / 卧姿床榻 (16:9 或 4:3)**：`1344 x 768` 或 `1152 x 896`
   - **修长全身 / 挺拔站姿 / 手机壁纸 (9:16 或 2:3)**：`768 x 1344` 或 `832 x 1216`
+
+### 9. 实景照片背景融合二次元画风铁律 (Real-Photo + 2D Anime Blending)
+- 凡涉及“实景照片为背景 + 二次元人物”的融合任务，**强制锁定标杆画风**（对标罗森富士山/京都八坂之塔成图）：
+  1. **纯正 2D 动漫面容**：严格继承武内崇/新海诚式 2D 原版立绘面部与清澈眼眸，负向严格封死 `(3d uncanny, 3d render doll, plastic skin, cgi:1.6)`，杜绝 3D 建模感与仿真实体皮肤。
+  2. **纯靠光影雕塑立体感**：强制加入强方向性侧逆轮廓光 (`rim light on hair and shoulders`) 与多层深邃折痕阴影 (`ambient occlusion on shirt and skirt folds`)，靠明暗交界线雕刻立体纵深，拒绝扁平。
+  3. **背景摄影质感与单反光学散景**：背景保留真实建筑/路面微观纹理并彻底净化杂乱路人，搭配大光圈浅景深光学散景 (`cinematic optical bokeh on background`)。
+  4. **固定融合定调句**：`anime character seamlessly blended into real photographic background`。
+  5. **严禁黑色描边 (No Black Outlines)**：人物轮廓与服饰线条严禁粗重黑色线稿或贴纸外框感（正向引导 `delicate soft contours, lineless anime coloring, clean borderless edges, no black outlines`；负向强制锁定 `(heavy black outline, thick black lineart, dark outline, black borders, sticker outline:1.6)`），轮廓纯靠光影与色彩明暗自然区分。
   - **经典中景肖像 / 杂志写真 (3:4)**：`896 x 1152`
   - **面部特写 / 社交头像 / 方形唱片 (1:1)**：`1024 x 1024`
 - 支持通过 `-AspectRatio auto` 自动从提示词语义推断，或通过 `-Width`/`-Height` 任意指定。
@@ -203,6 +211,18 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
 powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scripts\save_finished.ps1" `
   -Image "Saber-Canonical-Takeuchi-2K_00001_.png"
 ```
+
+### 7. 殿堂级标杆范式：实景二次元融合 + 油画光影雕塑 (Saber 渡月桥模版)
+- **核心定位**：解决“既要纯正 2D/武内崇清澈面容，又要实景自然立体感与真实反光，彻底杜绝 3D 塑料感与扁平纸片贴图”的终极解决方案。
+- **正向结构关键要点**：
+  1. `全新的画面与构图：画面中角色的长相、五官、发型与服装严格与图1保持高度一致。长相与画风与图1完全一致，...`
+  2. `机位景别与构图：16:9经典宽画幅电影构图(16:9 landscape ratio, cinematic movie still)。半身肖像近景特写，只露出胸部以上与肩膀部分(upper body medium close-up bust shot)，完全不露出手部、完全不露出下半身和腿部。`
+  3. `真实背景与大光圈散景虚化：背景完全还原图2中的[实景建筑流水]，单反相机大光圈光学浅景深散景虚化(cinematic optical bokeh on background, creamy soft bokeh)。`
+  4. `光影塑造与真实反光（立体感、写实油画般的光影雕塑）：明亮清澈的户外日光与环境漫反射，光影影调层次极为丰富深邃(rich painterly chiaroscuro, volumetric lighting, luminous ambient light)。柔和通透的侧逆轮廓光(glowing rim light on hair, ahoge and shoulders)勾勒出发丝晶莹剔透的高光轮廓，衣物褶皱具备深邃立体的多层环境闭塞阴影与真实柔和反光(sculpted folds, realistic ambient occlusion and fabric reflections)，面容立体饱满、光影通透自然，如同新海诚与精美写实动画电影剧照般，既保留纯正日漫灵动神韵，又具备油画般的厚重体积感与真实反光质感，拒绝死板扁平，绝无油腻塑料假人皮质。`
+  5. `画风铁律：严格禁止黑色描边(no black outlines, lineless soft edge integration, delicate soft contours)，形体轮廓纯靠环境光影与明度反差自然切分。`
+  6. `定调核心：anime character seamlessly blended into real photographic background, oil painting cinematic lighting depth, masterpiece, highest quality.`
+- **负向防御关键要点**：
+  - `flat 2d, overly flat, boring flat coloring, paper cut out, flat drawing, (3d uncanny, 3d render doll, plastic skin, cgi, 3d model, blender render, octane render, wax figure:1.6), (vest:1.8), (sleeveless vest:1.8), (waistcoat:1.8), (heavy black outline, thick black lineart, dark outline, black borders, sticker outline, hard black edge:1.6), center framing, stiff pose, deformed, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation, extra fingers, poorly drawn face, poorly drawn hands, oversaturated, harsh flash, low quality, artifacts`
 
 > **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。超分管线默认全面开启焦外保真，杜绝死锐假噪点。
 
