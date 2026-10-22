@@ -212,17 +212,23 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   -Image "Saber-Canonical-Takeuchi-2K_00001_.png"
 ```
 
-### 7. 殿堂级标杆范式：实景二次元融合 + 油画光影雕塑 (Saber 渡月桥模版)
-- **核心定位**：解决“既要纯正 2D/武内崇清澈面容，又要实景自然立体感与真实反光，彻底杜绝 3D 塑料感与扁平纸片贴图”的终极解决方案。
-- **正向结构关键要点**：
-  1. `全新的画面与构图：画面中角色的长相、五官、发型与服装严格与图1保持高度一致。长相与画风与图1完全一致，...`
-  2. `机位景别与构图：16:9经典宽画幅电影构图(16:9 landscape ratio, cinematic movie still)。半身肖像近景特写，只露出胸部以上与肩膀部分(upper body medium close-up bust shot)，完全不露出手部、完全不露出下半身和腿部。`
-  3. `真实背景与大光圈散景虚化：背景完全还原图2中的[实景建筑流水]，单反相机大光圈光学浅景深散景虚化(cinematic optical bokeh on background, creamy soft bokeh)。`
-  4. `光影塑造与真实反光（立体感、写实油画般的光影雕塑）：明亮清澈的户外日光与环境漫反射，光影影调层次极为丰富深邃(rich painterly chiaroscuro, volumetric lighting, luminous ambient light)。柔和通透的侧逆轮廓光(glowing rim light on hair, ahoge and shoulders)勾勒出发丝晶莹剔透的高光轮廓，衣物褶皱具备深邃立体的多层环境闭塞阴影与真实柔和反光(sculpted folds, realistic ambient occlusion and fabric reflections)，面容立体饱满、光影通透自然，如同新海诚与精美写实动画电影剧照般，既保留纯正日漫灵动神韵，又具备油画般的厚重体积感与真实反光质感，拒绝死板扁平，绝无油腻塑料假人皮质。`
-  5. `画风铁律：严格禁止黑色描边(no black outlines, lineless soft edge integration, delicate soft contours)，形体轮廓纯靠环境光影与明度反差自然切分。`
-  6. `定调核心：anime character seamlessly blended into real photographic background, oil painting cinematic lighting depth, masterpiece, highest quality.`
-- **负向防御关键要点**：
-  - `flat 2d, overly flat, boring flat coloring, paper cut out, flat drawing, (3d uncanny, 3d render doll, plastic skin, cgi, 3d model, blender render, octane render, wax figure:1.6), (vest:1.8), (sleeveless vest:1.8), (waistcoat:1.8), (heavy black outline, thick black lineart, dark outline, black borders, sticker outline, hard black edge:1.6), center framing, stiff pose, deformed, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation, extra fingers, poorly drawn face, poorly drawn hands, oversaturated, harsh flash, low quality, artifacts`
+### 7. 实景背景融合二次元推荐用法 (Real-Photo + Anime Blending)
+适用于“真实照片背景 + 二次元人物”的融合创作，兼顾人物五官的动漫感与画面的真实光影层次。
+
+#### 提示词编写要点：
+- **正向结构**：
+  1. **人物与背景基准**：指定人物长相与服装参照图1，背景地貌与构图参照图2；
+  2. **机位景别**：推荐 16:9 电影画幅、半身特写（upper body medium close-up bust shot）；
+  3. **立体感与光影**：使用侧逆轮廓光 (`glowing rim light on hair and shoulders`) 勾勒发丝轮廓，加入衣服褶皱的多层环境闭塞阴影与微弱反光 (`sculpted folds, realistic ambient occlusion and fabric reflections, rich painterly chiaroscuro`)，避免画面死板扁平；
+  4. **边缘与景深**：明确无粗黑描边 (`no black outlines, lineless soft edge integration`)，背景带有单反相机浅景深光学散景 (`cinematic optical bokeh on background, creamy soft bokeh`)；
+  5. **定调**：`anime character seamlessly blended into real photographic background, oil painting cinematic lighting depth, masterpiece, highest quality.`
+- **负向防御**：
+  - `flat 2d, overly flat, paper cut out, (3d uncanny, 3d render doll, plastic skin, cgi, 3d model:1.6), (heavy black outline, thick black lineart, dark outline, black borders:1.6), deformed, bad anatomy, wrong anatomy, extra limb, missing limb, blurry, artifacts`
+
+- **推荐生产步骤**：
+  1. **1M 快速出图**：确认构图、机位与动作细节；
+  2. **锁定 Seed 生成 3M 底图**（例如 2304×1280）：以原生 25 步让发丝与五官细节充分收敛；
+  3. **双流超分 4K / 8K**：使用 Remacri 进行景深保真超分辨率，保留背景真实光学虚化。
 
 > **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。超分管线默认全面开启焦外保真，杜绝死锐假噪点。
 
