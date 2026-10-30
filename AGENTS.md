@@ -3,14 +3,14 @@
 This repository provides image generation, high-fidelity universal editing, anime-real photo blending, and 4K optical bokeh-preserving upscaling via a local ComfyUI instance (`http://127.0.0.1:8188`).
 
 Engineered for **all AI coding agents and LLM harnesses**, including:
+- **Google Antigravity** (Native Skill)
+- **DeepSeek Harness (`dsh`)**
+- **OpenAI Codex**
 - **Anthropic Claude Code**
 - **Cursor** (Rules / Agent mode)
 - **Windsurf** (`.windsurfrules` / Cascade)
 - **Roo Code & Cline** (VS Code autonomous agents)
-- **Google Antigravity** (Native Skill)
 - **OpenCode & Aider** (CLI coding agents)
-- **DeepSeek Harness (`dsh`)**
-- **OpenAI Codex & Custom Python Agents**
 
 ---
 
@@ -114,8 +114,10 @@ Agents can parse the `workspace_path` or `filename` from stdout to present or ve
 
 ## 4. Multi-Agent Setup Quickstart
 
+- **Google Antigravity**: Loaded automatically via `.agents/skills/comfy2antigravity/SKILL.md`.
+- **DeepSeek Harness (`dsh`)**: Loaded as a plugin via `package.json`.
+- **OpenAI Codex**: Run Python scripts directly with standard JSON output.
 - **Claude Code**: Reference this file in your project or call `python scripts/<tool>.py` directly in bash tool calls.
 - **Cursor / Windsurf**: Add a rule in `.cursorrules` or `.windsurfrules` pointing to `AGENTS.md`.
 - **Roo Code / Cline**: Include the tool instructions in custom instructions or project prompt.
-- **Google Antigravity**: Loaded automatically via `.agents/skills/comfy2antigravity/SKILL.md`.
-- **DeepSeek Harness (`dsh`)**: Loaded as a plugin via `package.json`.
+- **Aider / OpenCode**: Execute the CLI tools directly in terminal environments.

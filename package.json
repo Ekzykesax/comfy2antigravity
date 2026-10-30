@@ -1,7 +1,7 @@
 {
   "name": "comfy2antigravity",
   "version": "1.1.0",
-  "description": "Universal ComfyUI image generation, editing, and blending skill for all AI coding agents (Claude Code, Cursor, Windsurf, Roo Code, Cline, Antigravity, OpenCode, Aider, DeepSeek Harness, Codex)",
+  "description": "Universal ComfyUI image generation, editing, and blending skill for all AI coding agents (Antigravity, DeepSeek Harness, Codex, Claude Code, Cursor, Windsurf, Roo Code, Cline, Aider)",
   "main": "scripts/generate.py",
   "bin": {
     "comfy-gen": "./scripts/generate.py",
@@ -42,16 +42,16 @@
     ]
   },
   "keywords": [
+    "antigravity-skill",
+    "deepseek-harness",
+    "dsh-plugin",
+    "codex-tool",
     "ai-agent",
     "claude-code",
     "cursor",
     "windsurf",
     "cline",
     "roo-code",
-    "antigravity-skill",
-    "deepseek-harness",
-    "dsh-plugin",
-    "codex-tool",
     "aider",
     "comfyui",
     "qwen-image",

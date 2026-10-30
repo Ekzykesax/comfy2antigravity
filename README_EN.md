@@ -6,12 +6,13 @@
 
 > **Universal Local ComfyUI Image Generation, High-Fidelity Editing & 4K Upscaling Skill for All AI Coding Agents**
 
+[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfy2antigravity)
+[![DeepSeek-Harness Compatible](https://img.shields.io/badge/DeepSeek__Harness-Compatible-purple.svg)]()
+[![OpenAI Codex Compatible](https://img.shields.io/badge/OpenAI__Codex-Compatible-black.svg)]()
 [![Claude Code Compatible](https://img.shields.io/badge/Claude__Code-Compatible-orange.svg)]()
 [![Cursor & Windsurf](https://img.shields.io/badge/Cursor%20%26%20Windsurf-Ready-blue.svg)]()
 [![Cline & Roo Code](https://img.shields.io/badge/Cline%20%26%20Roo--Code-Supported-green.svg)]()
-[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfy2antigravity)
-[![DeepSeek-Harness Compatible](https://img.shields.io/badge/DeepSeek__Harness-Compatible-purple.svg)]()
-[![OpenAI Codex & Aider](https://img.shields.io/badge/OpenAI__Codex%20%26%20Aider-Ready-black.svg)]()
+[![Aider & OpenCode](https://img.shields.io/badge/Aider%20%26%20OpenCode-Ready-black.svg)]()
 [![ComfyUI-Zero_Config](https://img.shields.io/badge/ComfyUI-Zero__Config-success.svg)]()
 [![License-Apache_2.0](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg)](LICENSE)
 
@@ -40,7 +41,7 @@ Includes out-of-the-box pipelines for high-fidelity text-to-image, reference-gui
    - Completely eliminates the manual operational overhead of wiring nodes, locating modules, and tuning parameters on the ComfyUI canvas.
    - Low-level automation scripts fully manage multi-modal tensor slot routing and schema validation, executing full generation and editing pipelines purely via natural language.
 2. **Universal Native Integration Across All AI Coding Agents**:
-   - Out-of-the-box compatibility with **Claude Code**, **Cursor**, **Windsurf**, **Roo Code / Cline**, **Google Antigravity**, **Aider**, and CLI agents.
+   - Out-of-the-box compatibility with **Google Antigravity**, **DeepSeek Harness (`dsh`)**, **OpenAI Codex**, as well as **Claude Code**, **Cursor**, **Windsurf**, **Roo Code / Cline**, and **Aider**.
    - Built exclusively on pure Python 3 standard library modules (zero external pip dependencies) with standardized JSON outputs for frictionless agent tool execution.
 3. **Multi-Modal Feature Decoupling & Character Consistency**:
    - Resolves the fundamental limitation where diffusion foundation models struggle to preserve specific characters or distinct garments purely from text prompts.
@@ -67,7 +68,25 @@ Includes out-of-the-box pipelines for high-fidelity text-to-image, reference-gui
 
 Easily integrate this skill into any autonomous coding environment:
 
-### 1. Claude Code (Anthropic)
+### 1. Google Antigravity
+Clone directly into your workspace skills directory. Antigravity discovers it automatically via `SKILL.md`, supporting native in-chat image delivery and mobile Remote Studio lightbox zoom:
+```bash
+git clone https://github.com/Ekzykesax/comfy2antigravity.git .agents/skills/comfy2antigravity
+```
+
+### 2. DeepSeek Harness (`dsh`)
+Install using the dsh plugin manager with preconfigured tool declarations:
+```bash
+dsh plugin add https://github.com/Ekzykesax/comfy2antigravity.git
+```
+
+### 3. OpenAI Codex
+Clone the repository and run using standard Python 3 (clean JSON output, no pip installation required):
+```bash
+git clone https://github.com/Ekzykesax/comfy2antigravity.git
+```
+
+### 4. Claude Code (Anthropic)
 Reference `AGENTS.md` in your project's `CLAUDE.md`:
 ```markdown
 # Image Generation & Editing Tooling
@@ -75,7 +94,7 @@ Use the Python scripts under `scripts/` to generate, edit, or upscale images via
 Refer to `AGENTS.md` for CLI argument specifications and structured JSON output.
 ```
 
-### 2. Cursor / Windsurf
+### 5. Cursor / Windsurf
 Add the following rule to `.cursorrules` or `.windsurfrules`:
 ```markdown
 When the user requests to generate, edit, blend, or upscale images:
@@ -84,26 +103,11 @@ When the user requests to generate, edit, blend, or upscale images:
 3. Check `AGENTS.md` for complete parameter references.
 ```
 
-### 3. Roo Code / Cline (VS Code)
+### 6. Roo Code / Cline (VS Code)
 Include the instructions from `AGENTS.md` in your Custom Instructions or project prompts.
 
-### 4. Google Antigravity
-Clone directly into your workspace skills directory. Antigravity will discover it automatically via `SKILL.md`:
-```bash
-git clone https://github.com/Ekzykesax/comfy2antigravity.git .agents/skills/comfy2antigravity
-```
-
-### 5. DeepSeek Harness (`dsh`)
-Install using the dsh plugin manager:
-```bash
-dsh plugin add https://github.com/Ekzykesax/comfy2antigravity.git
-```
-
-### 6. OpenAI Codex / Aider / OpenCode / Standalone Terminal
-Clone the repository and run using standard Python 3 (no pip installation required):
-```bash
-git clone https://github.com/Ekzykesax/comfy2antigravity.git
-```
+### 7. Aider / OpenCode / Standalone Terminal
+Execute the cross-platform Python scripts directly under `scripts/` (zero external dependencies).
 
 ---
 

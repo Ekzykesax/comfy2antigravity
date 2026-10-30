@@ -7,12 +7,13 @@
 > **面向全品类 AI Coding Agent 的 ComfyUI 本地图像生成、高保真编辑与超分技能库**  
 > Universal ComfyUI Skill & Toolset for All AI Coding Agents
 
+[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfy2antigravity)
+[![DeepSeek-Harness Compatible](https://img.shields.io/badge/DeepSeek__Harness-Compatible-purple.svg)]()
+[![OpenAI Codex Compatible](https://img.shields.io/badge/OpenAI__Codex-Compatible-black.svg)]()
 [![Claude Code Compatible](https://img.shields.io/badge/Claude__Code-Compatible-orange.svg)]()
 [![Cursor & Windsurf](https://img.shields.io/badge/Cursor%20%26%20Windsurf-Ready-blue.svg)]()
 [![Cline & Roo Code](https://img.shields.io/badge/Cline%20%26%20Roo--Code-Supported-green.svg)]()
-[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill-blue.svg)](https://github.com/Ekzykesax/comfy2antigravity)
-[![DeepSeek-Harness Compatible](https://img.shields.io/badge/DeepSeek__Harness-Compatible-purple.svg)]()
-[![OpenAI Codex & Aider](https://img.shields.io/badge/OpenAI__Codex%20%26%20Aider-Ready-black.svg)]()
+[![Aider & OpenCode](https://img.shields.io/badge/Aider%20%26%20OpenCode-Ready-black.svg)]()
 [![ComfyUI-Zero_Config](https://img.shields.io/badge/ComfyUI-Zero__Config-success.svg)]()
 [![License-Apache_2.0](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg)](LICENSE)
 
@@ -41,7 +42,7 @@
    - 彻底摆脱在 ComfyUI 画布上手动连线、查找节点和调试参数的繁琐流程；
    - 底层脚本全权接管多模态槽位映射与张量校验，避免节点断连与类型歧义异常，仅需标准自然语言即可驱动全套生图与编辑管线。
 2. **全品类 AI Coding Agent 原生适配 (Universal Agent Architecture)**：
-   - 原生兼容 **Claude Code**、**Cursor**、**Windsurf**、**Roo Code / Cline**、**Google Antigravity**、**Aider** 等主流智能体；
+   - 原生兼容 **Google Antigravity**、**DeepSeek Harness (`dsh`)**、**OpenAI Codex**，以及 **Claude Code**、**Cursor**、**Windsurf**、**Roo Code / Cline**、**Aider** 等主流智能体；
    - 基于纯 Python 3 标准库构建，零额外 pip 依赖，执行完毕输出标准化 JSON 结构，各大 Agent 均可开箱即用直接调度。
 3. **多模态参考解耦与特征一致性 (Reference Separation & Character Consistency)**：
    - 解决基础大模型单凭文本提示词难以精确还原特定角色与专属服装的行业痛点；
@@ -68,7 +69,25 @@
 
 本技能针对市面上主流 AI 编程助手与智能体环境进行了针对性适配：
 
-### 1. Claude Code (Anthropic)
+### 1. Google Antigravity
+克隆至技能目录，智能体将通过 `SKILL.md` 自动识别为原生技能，支持聊天框直出大图与手机端 (Remote Studio) 无缝放大：
+```bash
+git clone https://github.com/Ekzykesax/comfy2antigravity.git .agents/skills/comfy2antigravity
+```
+
+### 2. DeepSeek Harness (`dsh`)
+通过 dsh 插件命令一键安装并加载工具定义：
+```bash
+dsh plugin add https://github.com/Ekzykesax/comfy2antigravity.git
+```
+
+### 3. OpenAI Codex
+直接克隆仓库，通过标准 Python 3 直接运行（输出标准 JSON，零额外 pip 依赖）：
+```bash
+git clone https://github.com/Ekzykesax/comfy2antigravity.git
+```
+
+### 4. Claude Code (Anthropic)
 在项目根目录的 `CLAUDE.md` 或全局指令中引入 `AGENTS.md`：
 ```markdown
 # Image Generation & Editing Tooling
@@ -76,7 +95,7 @@ Use the Python scripts under `scripts/` to generate, edit, or upscale images via
 Refer to `AGENTS.md` for standard CLI flags and JSON outputs.
 ```
 
-### 2. Cursor / Windsurf
+### 5. Cursor / Windsurf
 在 `.cursorrules` 或 `.windsurfrules` 中添加以下规则：
 ```markdown
 When the user asks to generate, edit, upscale, or blend images:
@@ -85,26 +104,11 @@ When the user asks to generate, edit, upscale, or blend images:
 3. Read `AGENTS.md` for complete CLI argument specifications.
 ```
 
-### 3. Roo Code / Cline (VS Code)
+### 6. Roo Code / Cline (VS Code)
 在 Custom Instructions 中导入 `AGENTS.md` 内容，赋能智能体通过执行终端命令完成全自动生图与图像微调。
 
-### 4. Google Antigravity
-克隆至技能目录，智能体将通过 `SKILL.md` 自动识别为原生技能：
-```bash
-git clone https://github.com/Ekzykesax/comfy2antigravity.git .agents/skills/comfy2antigravity
-```
-
-### 5. DeepSeek Harness (`dsh`)
-通过 dsh 插件命令一键安装：
-```bash
-dsh plugin add https://github.com/Ekzykesax/comfy2antigravity.git
-```
-
-### 6. OpenAI Codex / Aider / OpenCode / 终端环境
-直接克隆仓库，通过标准 Python 3 直接运行（零额外 pip 依赖）：
-```bash
-git clone https://github.com/Ekzykesax/comfy2antigravity.git
-```
+### 7. Aider / OpenCode / 终端环境
+直接调用 `scripts/` 下的跨平台 Python 脚本执行生图、编辑与超分（零外部依赖）。
 
 ---
 
