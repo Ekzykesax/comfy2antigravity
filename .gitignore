@@ -18,5 +18,12 @@ ehthumbs.db
 .vscode/
 .idea/
 
+# Python bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
 # OS metadata
 .DS_Store
