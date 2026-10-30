@@ -36,30 +36,30 @@ Includes out-of-the-box pipelines for high-fidelity text-to-image, reference-gui
 
 ## Key Features
 
-1. **Zero Canvas Friction (Goodbye Node Spaghetti & Errors)**:
-   - Eliminates the hassle of manually wiring nodes, finding workflows, and tweaking sliders in the ComfyUI canvas.
-   - Handles multi-modal tensor mappings and image slots automatically; agents interact purely through natural language.
-2. **Universal Compatibility for Every AI Coding Agent**:
-   - Native support for **Claude Code**, **Cursor**, **Windsurf**, **Roo Code / Cline**, **Google Antigravity**, **Aider**, and CLI agents.
-   - Built on pure Python 3 standard library modules (zero external pip packages); agents call the scripts like standard tools.
-3. **Rock-Solid Character Consistency (No Visual Drift)**:
-   - Feed one or two reference images (e.g., Image 1 for face identity, Image 2 for outfit style).
-   - Identity and hair features remain strictly locked, while facial expressions, poses, and new scenes are completely controlled by your prompt.
-4. **Surgical Image Editing (Change What You Want, Keep What You Don't)**:
-   - Want to change an outfit, alter hair, tweak a pose, or switch the weather? Done in one sentence.
-   - Uses native 25-step sampling with original image latent anchoring. Only requested regions are redrawn; backgrounds, lighting, and facial geometry remain 100% pixel-anchored.
-5. **2D Anime Blended Seamlessly into Real Scenery**:
-   - Drop your favorite anime characters into real-world photographic scenes (like cinematic posters).
-   - Sculpted with natural environmental lighting and oil-painting depth, completely eliminating heavy black outlines and cheap 3D doll artifacts.
-6. **4K Upscaling That Respects Optical Bokeh**:
-   - Conventional upscalers ruin camera bokeh by over-sharpening background blur into noisy artifacts.
-   - This skill uses focus-aware bokeh preservation: facial features and textures are reconstructed in neural 4K, while creamy optical blur stays soft and natural.
-7. **8GB VRAM Safe & Silent Background Auto-Start**:
-   - Reference images are automatically pre-scaled to prevent VRAM overflow and avoid system memory paging crashes.
-   - If ComfyUI is offline, the script detects it and silently launches the service in the background.
-8. **Organized & Classified Asset Gallery**:
-   - Generated images, references, and configs are automatically saved into a structured directory.
-   - Segregates General (All-Ages) from NSFW content, automatically routing satisfied 4K artworks into a dedicated masterpiece gallery.
+1. **End-to-End Automation & Zero UI Friction**:
+   - Completely eliminates the manual operational overhead of wiring nodes, locating modules, and tuning parameters on the ComfyUI canvas.
+   - Low-level automation scripts fully manage multi-modal tensor slot routing and schema validation, executing full generation and editing pipelines purely via natural language.
+2. **Universal Native Integration Across All AI Coding Agents**:
+   - Out-of-the-box compatibility with **Claude Code**, **Cursor**, **Windsurf**, **Roo Code / Cline**, **Google Antigravity**, **Aider**, and CLI agents.
+   - Built exclusively on pure Python 3 standard library modules (zero external pip dependencies) with standardized JSON outputs for frictionless agent tool execution.
+3. **Multi-Modal Feature Decoupling & Character Consistency**:
+   - Resolves the fundamental limitation where diffusion foundation models struggle to preserve specific characters or distinct garments purely from text prompts.
+   - Implements a separation-of-concerns visual mechanism supporting single or dual references (e.g., character identity + garment style), locking facial geometry and hairstyles while preserving full prompt control over expressions, poses, and environments.
+4. **High-Fidelity Instruction Editing with 1:1 Pixel Anchoring**:
+   - Engineered for surgical, localized editing tasks including outfit changes, hairstyle modifications, pose alterations, and background/lighting adjustments.
+   - Relies on pure native 25-step sampling with **strictly no acceleration LoRAs**. Anchored directly to source image latent representations, modifying only targeted regions while preserving untouched backgrounds, lighting, and facial structures with 1:1 fidelity.
+5. **2D Anime + Real-Photo Blending Pipeline**:
+   - Specialized pipeline for seamlessly blending authentic 2D anime characters into real-world photographic scenery based on the golden benchmark paradigm.
+   - Leverages realistic ambient occlusion and environment bounce light to sculpt painterly volumetric depth, completely eliminating heavy black lineart and uncanny 3D doll artifacts.
+6. **4K Focus-Aware Bokeh-Preserving Upscaling**:
+   - Overcomes the traditional upscaler flaw where soft optical background blur is forcibly sharpened into harsh, artificial noise.
+   - Employs dual-stream focus fusion: in-focus subjects (eyes, hair strands, fabric weaves) undergo neural 4K reconstruction, while out-of-focus bokeh retains smooth optical gradation, delivering both micro-detail and authentic depth of field.
+7. **Hardware-Aware VRAM Optimization & Silent Service Recovery**:
+   - Rigorously optimized for 8GB VRAM environments: reference images are proactively scaled and aspect-aligned to prevent VRAM overflows and avoid system memory paging penalties.
+   - Automatically inspects ComfyUI API health before execution and silently initializes the background service if offline, ensuring an uninterrupted automation loop.
+8. **Classified Asset Organization & Masterpiece Archiving**:
+   - Automatically indexes and organizes all generated assets, enforcing strict isolation between General (All-Ages) and NSFW business directories.
+   - Features a dedicated "Masterpiece Gallery": images upscaled to 4K are automatically routed as approved finals, while satisfactory non-4K pieces can be archived with a single command.
 
 ---
 
