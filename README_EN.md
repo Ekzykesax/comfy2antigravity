@@ -36,29 +36,30 @@ Includes out-of-the-box pipelines for high-fidelity text-to-image, reference-gui
 
 ## Key Features
 
-1. **Zero UI Interaction (No Noodles, No Manual Tuning)**:
-   - Eliminates manual ComfyUI canvas operations; all complex wiring and parameter scheduling are handled automatically.
-   - Automatically handles multi-modal tensor mappings (such as `images.image_1` / `images.image_2` slots), avoiding ambiguous boolean tensor runtime exceptions.
-2. **Native Compatibility with All AI Coding Agents**:
-   - **Claude Code**: Invoke cross-platform Python CLIs directly inside tool calls or project rules;
-   - **Cursor / Windsurf**: Add to `.cursorrules` or `.windsurfrules` for automated discovery and execution;
-   - **Roo Code / Cline**: Import into Custom Instructions to empower agents with autonomous image generation and editing;
-   - **Google Antigravity**: Loaded natively via `SKILL.md` with in-chat image rendering and mobile Remote Studio lightbox support;
-   - **DeepSeek Harness (`dsh`)**: One-click plugin installation via `package.json`;
-   - **OpenAI Codex / Aider / OpenCode**: Pure Python 3 standard library scripts (zero external pip dependencies) outputting clean JSON to `stdout`.
-3. **Multi-Modal Character & Style Consistency**: Supports single or dual reference image inputs. Separates character identity from text prompts, ensuring reliable visual consistency without contradictory hallucination.
-4. **Dedicated Dual-Pipeline Sampling Strategy**:
-   - **Text-to-Image / Reference Generation**: Employs Viggle Turbo 8-step sampling (`Euler / Simple`, CFG 1.0) with empty latent random noise diffusion, achieving complete denoising trajectory convergence;
-   - **Universal High-Fidelity Editing**: Uses official native 25-step sampling with **strictly NO turbo LoRA**. Features `resolution = 0` to preserve the original aspect ratio and latent anchoring directly from source image latents, ensuring 1:1 pixel fidelity for untouched regions (backgrounds, lighting, facial geometry);
-   - **2D Anime + Real Photo Blending**: Dual-reference routing (Character Ref + Real Scenery Ref) under native 25 steps, sculpted with painterly ambient occlusion and volumetric lighting, completely eliminating heavy black outlines and uncanny 3D plastic artifacts.
-5. **4K Focus-Aware Bokeh-Preserving Upscale (Focus-Aware Bokeh)**:
-   - Powered by **`4x_foolhardy_Remacri.pth`** with dual-stream gradient-feathered focus fusion;
-   - Sharp in-focus subjects (facial details, eyes, hair strands, fabric textures) undergo neural 4K reconstruction;
-   - Defocused backgrounds (distant scenery, creamy bokeh circles) are smoothly enlarged mathematically, preventing artificial over-sharpening and harsh noise artifacts in blurred regions.
-6. **Auto Health Check & Silent Recovery**: Probes the ComfyUI API endpoint (`http://127.0.0.1:8188`) before task execution and silently starts the background service if offline.
-7. **Proactive Preprocessing & Organized Archiving**:
-   - Automatically downscales input reference images to within 768px on the long edge, preventing VRAM overflow and eliminating shared GPU memory paging penalties;
-   - Organizes all outputs under `ComfyUI生图成果/` with strict segregation between `全年龄/` (General / All-Ages) and `NSFW/` directories.
+1. **Zero Canvas Friction (Goodbye Node Spaghetti & Errors)**:
+   - Eliminates the hassle of manually wiring nodes, finding workflows, and tweaking sliders in the ComfyUI canvas.
+   - Handles multi-modal tensor mappings and image slots automatically; agents interact purely through natural language.
+2. **Universal Compatibility for Every AI Coding Agent**:
+   - Native support for **Claude Code**, **Cursor**, **Windsurf**, **Roo Code / Cline**, **Google Antigravity**, **Aider**, and CLI agents.
+   - Built on pure Python 3 standard library modules (zero external pip packages); agents call the scripts like standard tools.
+3. **Rock-Solid Character Consistency (No Visual Drift)**:
+   - Feed one or two reference images (e.g., Image 1 for face identity, Image 2 for outfit style).
+   - Identity and hair features remain strictly locked, while facial expressions, poses, and new scenes are completely controlled by your prompt.
+4. **Surgical Image Editing (Change What You Want, Keep What You Don't)**:
+   - Want to change an outfit, alter hair, tweak a pose, or switch the weather? Done in one sentence.
+   - Uses native 25-step sampling with original image latent anchoring. Only requested regions are redrawn; backgrounds, lighting, and facial geometry remain 100% pixel-anchored.
+5. **2D Anime Blended Seamlessly into Real Scenery**:
+   - Drop your favorite anime characters into real-world photographic scenes (like cinematic posters).
+   - Sculpted with natural environmental lighting and oil-painting depth, completely eliminating heavy black outlines and cheap 3D doll artifacts.
+6. **4K Upscaling That Respects Optical Bokeh**:
+   - Conventional upscalers ruin camera bokeh by over-sharpening background blur into noisy artifacts.
+   - This skill uses focus-aware bokeh preservation: facial features and textures are reconstructed in neural 4K, while creamy optical blur stays soft and natural.
+7. **8GB VRAM Safe & Silent Background Auto-Start**:
+   - Reference images are automatically pre-scaled to prevent VRAM overflow and avoid system memory paging crashes.
+   - If ComfyUI is offline, the script detects it and silently launches the service in the background.
+8. **Organized & Classified Asset Gallery**:
+   - Generated images, references, and configs are automatically saved into a structured directory.
+   - Segregates General (All-Ages) from NSFW content, automatically routing satisfied 4K artworks into a dedicated masterpiece gallery.
 
 ---
 
