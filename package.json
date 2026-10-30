@@ -1,16 +1,18 @@
 {
   "name": "comfy2antigravity",
-  "version": "1.0.0",
-  "description": "ComfyUI image generation and universal editing plugin for AI agents (DeepSeek Harness, Codex, Antigravity)",
+  "version": "1.1.0",
+  "description": "Universal ComfyUI image generation, editing, and blending skill for all AI coding agents (Claude Code, Cursor, Windsurf, Roo Code, Cline, Antigravity, OpenCode, Aider, DeepSeek Harness, Codex)",
   "main": "scripts/generate.py",
   "bin": {
     "comfy-gen": "./scripts/generate.py",
     "comfy-edit": "./scripts/edit_image.py",
+    "comfy-blend": "./scripts/blend_anime_real.py",
     "comfy-upscale": "./scripts/upscale_image.py"
   },
   "scripts": {
     "generate": "python scripts/generate.py",
     "edit": "python scripts/edit_image.py",
+    "blend": "python scripts/blend_anime_real.py",
     "upscale": "python scripts/upscale_image.py"
   },
   "dsh": {
@@ -28,6 +30,11 @@
         "command": "python scripts/edit_image.py --image \"{image}\" --prompt \"{prompt}\""
       },
       {
+        "name": "comfy_blend",
+        "description": "Blend 2D anime character into real-world photo background with oil painting lighting depth.",
+        "command": "python scripts/blend_anime_real.py --char-ref \"{char_ref}\" --bg-ref \"{bg_ref}\""
+      },
+      {
         "name": "comfy_upscale",
         "description": "4K focus-aware bokeh-preserving upscale via ComfyUI using 4x_foolhardy_Remacri.",
         "command": "python scripts/upscale_image.py --image \"{image}\" --target_width {width}"
@@ -35,12 +42,20 @@
     ]
   },
   "keywords": [
+    "ai-agent",
+    "claude-code",
+    "cursor",
+    "windsurf",
+    "cline",
+    "roo-code",
+    "antigravity-skill",
     "deepseek-harness",
     "dsh-plugin",
     "codex-tool",
-    "antigravity-skill",
+    "aider",
     "comfyui",
-    "qwen-image"
+    "qwen-image",
+    "noctq"
   ],
   "author": "Ekzykesax",
   "license": "Apache-2.0"

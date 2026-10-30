@@ -1,0 +1,488 @@
+{
+  "id": "anime_real_world_blend_v1",
+  "revision": 0,
+  "last_node_id": 11,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        340,
+        82
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "title": "1. 扩散主模型 (NoctQ V4 int8)",
+      "widgets_values": [
+        "NoctQ_V4_int8_convrot.safetensors",
+        "default"
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        140
+      ],
+      "size": [
+        340,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "title": "2. 文本/视觉编码 (Qwen2.5-VL 7B)",
+      "widgets_values": [
+        "qwen3vl_8b_nvfp4.safetensors",
+        "qwen_image",
+        "default"
+      ],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [
+        0,
+        300
+      ],
+      "size": [
+        340,
+        58
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "title": "3. 官方原生 VAE (ae.safetensors)",
+      "widgets_values": [
+        "qwen_image_2.1_vae_bf16.safetensors"
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            9,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        410
+      ],
+      "size": [
+        340,
+        330
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "title": "4. 【图1】二次元角色立绘参考 (Character Ref)",
+      "widgets_values": [
+        "saber_casual_ref.png",
+        "image"
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        790
+      ],
+      "size": [
+        340,
+        330
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "title": "5. 【图2】真实风景实景背景参考 (Real BG Ref)",
+      "widgets_values": [
+        "ref_lawson_fuji_bg.png",
+        "image"
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            11
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        400,
+        0
+      ],
+      "size": [
+        320,
+        106
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "title": "6. 潜空间 (默认 3M 电影画幅 2304x1280)",
+      "widgets_values": [
+        2304,
+        1280,
+        1
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "TextEncodeQwenImage21",
+      "pos": [
+        400,
+        160
+      ],
+      "size": [
+        560,
+        680
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "title": "7. Qwen 跨模态编码 (渡月桥殿堂级黄金范式)",
+      "widgets_values": [
+        "全新的画面与构图：画面中角色的长相、五官、发型与服装严格与图1保持高度一致。\n长相与画风与图1完全一致，[此处填入角色特征：如金发精致编发盘发系深蓝色缎带蝴蝶结，头顶正中央唯有一根标志性昂然挺拔的单根独立呆毛(single solitary ahoge, exactly one single hair strand, perfectly curved, no split, no branching)，碧绿色纯净灵动的大眼睛与武内崇纯正二次元动漫五官]。[此处填入服装描述：身穿图1中的白色长袖衬衫配深蓝蝴蝶结领结，深蓝高腰长裙，纯洁优雅，严禁任何外套与马甲背心]。\n机位景别与构图：16:9经典宽画幅电影构图(16:9 landscape ratio, cinematic movie still)。[此处填入机位与姿态：半身肖像近景特写，只露出胸部以上与双肩部分(upper body medium close-up bust shot)，完全不露出手部与下半身，角色位于画面右侧近景，身体微倾自然面向镜头，神态温柔文雅，嘴角带着浅浅温柔的微笑]。\n真实背景与大光圈散景虚化：背景完全还原图2中的[此处填入实景环境：如日本河口湖罗森便利店实景建筑与门头，以及屋顶上方远景处巍峨壮观、白雪皑皑的巨大富士山雪山]。长焦相机大光圈光学浅景深散景虚化(cinematic optical bokeh on background, creamy soft bokeh, telephoto lens compression)。画面彻底净化去除所有杂乱游客、行人、车辆与多余杂物。\n光影塑造与真实反光（立体感、写实油画般的光影雕塑）：\n明亮清澈的户外日光与环境漫反射，光影影调层次极为丰富深邃(rich painterly chiaroscuro, volumetric lighting, luminous ambient light)。\n柔和通透的侧逆轮廓光(glowing rim light on hair, ahoge and shoulders)勾勒出发丝晶莹剔透的高光轮廓，衣物褶皱具备深邃立体的多层环境闭塞阴影与真实柔和反光(sculpted folds, realistic ambient occlusion and fabric reflections)，面容立体饱满、光影通透自然，如同新海诚与精美写实动画电影剧照般，既保留纯正日漫灵动神韵，又具备油画般的厚重体积感与真实反光质感，拒绝死板扁平，绝无油腻塑料假人皮质。\n画风铁律：严格禁止黑色描边(no black outlines, lineless soft edge integration, delicate soft contours, clean borderless edges)，形体轮廓纯靠环境光影与明度反差自然切分。\n定调核心：anime character seamlessly blended into real photographic background, oil painting cinematic lighting depth, masterpiece, highest quality.",
+        "flat 2d, overly flat, boring flat coloring, paper cut out, flat drawing, (3d uncanny, 3d render doll, plastic skin, cgi, 3d model, blender render, octane render, wax figure:1.6), hands, fingers, showing hands, arms reaching down, knees, legs, lower body, full body, wide shot, (vest:1.8), (sleeveless vest:1.8), (waistcoat:1.8), (corset:1.8), (coat:1.5), (jacket:1.5), (heavy black outline, thick black lineart, dark outline, black borders, sticker outline, hard black edge:1.6), (cars, parked cars, vehicles, automobile, trucks, vans, bicycle, crowd, tourists, pedestrians, extra people, trash, clutter:1.5), (split ahoge, multiple ahoge, branching ahoge, double ahoge:1.4), center framing, stiff pose, deformed, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation, extra fingers, poorly drawn face, poorly drawn hands, oversaturated, harsh flash, low quality, artifacts",
+        0
+      ],
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "name": "images.image_1",
+          "type": "IMAGE",
+          "link": 8
+        },
+        {
+          "name": "images.image_2",
+          "type": "IMAGE",
+          "link": 11
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": null
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "KSampler",
+      "pos": [
+        1020,
+        100
+      ],
+      "size": [
+        310,
+        262
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "title": "8. 纯净采样器 (原生 25 步 / 绝无 Turbo 塑料感)",
+      "widgets_values": [
+        20261023,
+        "randomize",
+        25,
+        3.5,
+        "euler",
+        "simple",
+        1.0
+      ],
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 3
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 10
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "VAEDecode",
+      "pos": [
+        1380,
+        100
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "title": "9. VAE 极清解码",
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 5
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "SaveImage",
+      "pos": [
+        1380,
+        200
+      ],
+      "size": [
+        340,
+        270
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "title": "10. 成果保存 (Anime-RealWorld-Blend-3M)",
+      "widgets_values": [
+        "Anime-RealWorld-Blend-3M"
+      ],
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 6
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "MarkdownNote",
+      "pos": [
+        400,
+        890
+      ],
+      "size": [
+        560,
+        260
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "title": "📌 渡月桥黄金范式核心指南",
+      "widgets_values": [
+        "### 🌟 二次元角色实景融合专属工作流（渡月桥殿堂级黄金范式）\n1. **图1（角色立绘参考）**：连接人物官方立绘、插画或设定图。\n2. **图2（实景背景参考）**：连接真实摄影照片（如渡月桥、罗森便利店、大桥港口等）。\n3. **分辨率设定**：\n   - 3M 电影大画幅（推荐）：2304 x 1280 (16:9)\n   - 1M 极速测试画幅：1344 x 768 (16:9)\n4. **采样配置**：\n   - 官方原生 25 步（Euler / Simple，CFG: 3.5），严禁使用加速 Turbo LoRA。\n5. **画风铁律**：\n   - 纯正二次元五官，严禁 3D 塑料娃娃质感与低质黑线描边。\n   - 体积感纯靠侧逆轮廓光 (Rim Light) 与深邃环境闭塞阴影 (AO) 雕刻。\n   - 背景保持单反光学散景虚化 (Creamy Optical Bokeh)。"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      4,
+      0,
+      "CLIP"
+    ],
+    [
+      3,
+      4,
+      0,
+      6,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      4,
+      5,
+      0,
+      6,
+      3,
+      "LATENT"
+    ],
+    [
+      5,
+      6,
+      0,
+      7,
+      0,
+      "LATENT"
+    ],
+    [
+      6,
+      7,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      3,
+      0,
+      7,
+      1,
+      "VAE"
+    ],
+    [
+      8,
+      9,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      9,
+      3,
+      0,
+      4,
+      3,
+      "VAE"
+    ],
+    [
+      10,
+      4,
+      1,
+      6,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      11,
+      10,
+      0,
+      4,
+      2,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1.0,
+      "offset": [
+        50,
+        50
+      ]
+    }
+  },
+  "version": 0.4
+}

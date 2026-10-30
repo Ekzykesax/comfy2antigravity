@@ -28,7 +28,7 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
   - Text/Vision Encoder: `qwen3vl_8b_nvfp4.safetensors` -> [Comfy-Org/Qwen3-VL](https://huggingface.co/Comfy-Org/Qwen3-VL) (NVFP4 省显存多模态编码器)
   - VAE: `qwen_image_2.1_vae_bf16.safetensors` -> [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1) (官方 BF16 VAE)
   - 核心采样器:
-    - **直接文生图 / 参考图生图**：**★ Viggle Turbo 8 步黄金配置 ★** (`Euler / Simple`, Steps: 8, CFG: 1.0。耗时约 42 秒，微观去噪轨迹完全收敛，兼顾极速与构图创作)。
+    - **直接文生图 / 参考图生图**：**★ Viggle Turbo 8 步黄金配置 ★** (`Euler / Simple`, Steps: 8, CFG: 1.0。微观去噪轨迹完全收敛，兼顾极速与细节构图创作)。
     - **高保真图像编辑**：**★ 官方原生 25 步纯净配置 ★** (`Euler / Simple`, Steps: 25, CFG: 1.0。**严禁使用加速 LoRA**，`resolution = 0` 继承原图比例，潜空间直承原图 Latent，实现背景与五官 1:1 物理锚定)。
 
 ---
@@ -91,8 +91,8 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
   - **强制 `resolution = 0`**（保持压缩后的自然尺寸，按 32 像素对齐）。
   - **严禁使用默认值 `resolution = 1024`**：ComfyUI 默认的 1024 会把几十万像素的图反向插值放大到 105 万像素，导致 Token 数量暴涨数倍，将 8GB 显卡直接推向系统共享内存换页降速惩罚！
 - **净收益**：
-  - 彻底杜绝 8GB 显卡显存溢出（Shared GPU Memory 惩罚）；
-  - 单步耗时由 15s 降至 4.0s，25 步生成耗时从 5.5 分钟缩减至 2 分钟整，提速超 60%！
+  - 彻底杜绝 8GB 显存溢出与 Shared GPU Memory 换页惩罚；
+  - 大幅降低单步注意力与潜空间显存计算开销，采样去噪轨迹更加纯净稳健。
 
 ### 8. 自适应构图与动态画幅分辨率 (Adaptive Aspect Ratio)
 - 告别千篇一律的固定尺寸，根据具体生图画面的题材与构图需求智能匹配最佳分辨率（总像素稳定在 100 万级最优生成甜点区）：
@@ -102,10 +102,11 @@ description: Generates and edits high-quality images via local ComfyUI (NoctQ V4
 ### 9. 实景照片背景融合二次元画风铁律 (Real-Photo + 2D Anime Blending)
 - 凡涉及“实景照片为背景 + 二次元人物”的融合任务，**强制锁定标杆画风**（对标罗森富士山/京都八坂之塔成图）：
   1. **纯正 2D 动漫面容**：严格继承武内崇/新海诚式 2D 原版立绘面部与清澈眼眸，负向严格封死 `(3d uncanny, 3d render doll, plastic skin, cgi:1.6)`，杜绝 3D 建模感与仿真实体皮肤。
-  2. **纯靠光影雕塑立体感**：强制加入强方向性侧逆轮廓光 (`rim light on hair and shoulders`) 与多层深邃折痕阴影 (`ambient occlusion on shirt and skirt folds`)，靠明暗交界线雕刻立体纵深，拒绝扁平。
+  2. **油画厚重立体感与场景自适应光影**：依靠丰富多层环境闭塞阴影与真实环境漫反射塑造厚重体积感，拒绝纸片死板扁平；**光线方向与光质随场景自由适配**（如清晨柔和漫射光、午后通透天光、黄昏温暖逆光、室内壁炉烛光、夜景霓虹反射等，不强制局限于单一的侧逆日光），根据具体环境氛围自由雕琢光影。
   3. **背景摄影质感与单反光学散景**：背景保留真实建筑/路面微观纹理并彻底净化杂乱路人，搭配大光圈浅景深光学散景 (`cinematic optical bokeh on background`)。
-  4. **固定融合定调句**：`anime character seamlessly blended into real photographic background`。
-  5. **严禁黑色描边 (No Black Outlines)**：人物轮廓与服饰线条严禁粗重黑色线稿或贴纸外框感（正向引导 `delicate soft contours, lineless anime coloring, clean borderless edges, no black outlines`；负向强制锁定 `(heavy black outline, thick black lineart, dark outline, black borders, sticker outline:1.6)`），轮廓纯靠光影与色彩明暗自然区分。
+  4. **固定融合定调句**：`anime character seamlessly blended into real photographic background, oil painting cinematic lighting depth, masterpiece, highest quality.`
+  5. **严禁黑色描边 (No Black Outlines)**：人物轮廓与服饰线条严禁粗重黑色线稿或贴纸外框感（正向引导 `delicate soft contours, lineless soft edge integration, clean borderless edges, no black outlines`；负向强制锁定 `(heavy black outline, thick black lineart, dark outline, black borders, sticker outline, hard black edge:1.6)`），轮廓纯靠光影与色彩明暗自然区分。
+  6. **最小修改原则**：服饰修改或脱衣重绘时，仅在原版服饰描写所在句子做精准最小替换，严禁擅自插入杂乱的西文写实修饰词（如 `artistic nude, bare torso` 等），严防诱发 3D 塑料感。
   - **经典中景肖像 / 杂志写真 (3:4)**：`896 x 1152`
   - **面部特写 / 社交头像 / 方形唱片 (1:1)**：`1024 x 1024`
 - 支持通过 `-AspectRatio auto` 自动从提示词语义推断，或通过 `-Width`/`-Height` 任意指定。
@@ -212,10 +213,29 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   -Image "Saber-Canonical-Takeuchi-2K_00001_.png"
 ```
 
-### 7. 实景背景融合二次元推荐用法 (Real-Photo + Anime Blending)
-适用于“真实照片背景 + 二次元人物”的融合创作，兼顾人物五官的动漫感与画面的真实光影层次。
+### 7. 二次元角色实景融合管线 (Real-Photo + Anime Blending)
+适用于“真实摄影照片背景 + 二次元动漫人物”的殿堂级融合创作，兼顾人物五官的纯正动漫感与真实油画级光影体积感。
+- **专属工作流**：`配置与工作流/二次元实景融合_原生25步_NoctQ.json`（支持 ComfyUI Web 界面直接拖拽，含全中文标注与使用卡片）
+- **专属调度脚本**：`blend_anime_real.ps1`（零临时文件、自动化模板拼装）
 
-#### 提示词编写要点：
+#### 一键脚本调用示例：
+```powershell
+# 极速一键调用（默认 16:9 3M，原生 25 步，CFG 3.5）
+.\blend_anime_real.ps1 `
+  -CharRef "saber_casual_ref.png" `
+  -BgRef "ref_lawson_fuji_bg.png" `
+  -Resolution "3M"
+
+# 自定义角色特征与实景细节：
+.\blend_anime_real.ps1 `
+  -CharRef "ref_tohsaka_rin_character.png" `
+  -BgRef "ref_tokyo_rainbow_bridge_night.png" `
+  -CharDesc "长相五官严格与图1一致，双马尾黑色长发系黑色丝带，青蓝色眼眸，身穿图1中的红色高领毛衣与黑色百褶裙" `
+  -BgDesc "日本东京湾彩虹大桥壮丽夜景，桥体彩色绚丽灯光倒映在黑色海面上，远处东京塔与城市摩天大楼天际线" `
+  -Resolution "3M"
+```
+
+#### 提示词编写要点（渡月桥殿堂级黄金范式）：
 - **正向结构**：
   1. **人物与背景基准**：指定人物长相与服装参照图1，背景地貌与构图参照图2；
   2. **机位景别**：推荐 16:9 电影画幅、半身特写（upper body medium close-up bust shot）；
@@ -229,6 +249,7 @@ powershell -ExecutionPolicy Bypass -File ".agents\skills\comfy2antigravity\scrip
   1. **1M 快速出图**：确认构图、机位与动作细节；
   2. **锁定 Seed 生成 3M 底图**（例如 2304×1280）：以原生 25 步让发丝与五官细节充分收敛；
   3. **双流超分 4K / 8K**：使用 Remacri 进行景深保真超分辨率，保留背景真实光学虚化。
+
 
 > **底层架构注记**：通用图像编辑管线**绝对不使用加速 LoRA**，采样器直连纯净 UNet 官方原生 25 步，`resolution = 0` 严格继承原图尺寸比例，潜空间直承原图 Latent，实现未修改区域（五官、发型、背景建筑、光影）的像素级物理锚定。超分管线默认全面开启焦外保真，杜绝死锐假噪点。
 

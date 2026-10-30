@@ -1,18 +1,23 @@
 {
   "name": "comfy2antigravity",
-  "version": "1.0.0",
-  "description": "Universal local ComfyUI workflow runner and generation engine with built-in flagship Qwen-Image 2.1 (NoctQ V4 + Viggle Turbo 8-step) pipeline.",
+  "version": "1.1.0",
+  "description": "Universal local ComfyUI workflow runner and generation engine for all AI coding agents with built-in Qwen-Image 2.1 (NoctQ V4 + Viggle Turbo) pipelines.",
   "author": "Ekzykesax",
   "license": "Apache-2.0",
   "keywords": [
     "comfyui",
     "comfyui-universal",
+    "ai-agent",
+    "claude-code",
+    "cursor",
+    "windsurf",
+    "cline",
+    "roo-code",
     "text-to-image",
+    "image-editing",
     "qwen-image",
     "noctq",
     "viggle-turbo",
-    "flux",
-    "sdxl",
     "antigravity"
   ]
 }

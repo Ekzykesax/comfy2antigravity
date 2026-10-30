@@ -1,4 +1,4 @@
-﻿param (
+param (
     [Parameter(Mandatory = $true, Position = 0)]
     [Alias("RefImage", "InputImage")]
     [string]$Image,
@@ -51,6 +51,12 @@
 
     [Parameter(Mandatory = $false)]
     [string]$WorkspaceDir = "",
+
+    [Parameter(Mandatory = $false)]
+    [string]$Lora = "auto",
+
+    [Parameter(Mandatory = $false)]
+    [double]$LoraStrength = 0.8,
 
     [Parameter(Mandatory = $false)]
     [switch]$NSFW
@@ -158,6 +164,24 @@ if ($Seed -le 0) {
 }
 
 # 3. 构造通用高保真图像编辑 Prompt 字典（绝不挂载加速 LoRA，Latent 直承原图）
+$nsfwPattern = "(?i)(nsfw|nude|naked|topless|bottomless|pussy|slit|vulva|genitals|anus|nipple|breast|cleavage|bareback|braless|lingerie|bikini|thong|microbikini|sheer|mesh|lace|crotch|boudoir|gravure|spreadlegs|backhips|sexy|venus|sensual|bath|69|pronelie|shower|penetration|vaginal|pelvic|busty|uncensored|sultry|macro-slit|realanatomy|裸|全裸|半裸|去衣|脱衣|私密|一线天|阴部|阴唇|乳头|巨乳|乳晕|下体|情趣|透视|内衣|比基尼|丁字裤)"
+$detectedNsfw = $NSFW -or ($Prompt -match $nsfwPattern) -or ($resolvedImg1 -match "NSFW")
+
+$activeLora = ""
+$targetLoraName = "qwen2_1-femaledVaginus-nsfw-v1_3-fine_L22-31.safetensors"
+$demosaicPattern = "(?i)(demosaic|mosaic|uncensor|去码|消除马赛克|去马赛克|修复马赛克|无码)"
+if ($Prompt -match $demosaicPattern -or $Lora -like "*Edit*") {
+    $targetLoraName = "Qwen-Image-2.1-NSFW-Image-Edit.safetensors"
+}
+
+if ($Lora.ToLower() -eq "auto") {
+    if ($detectedNsfw) {
+        $activeLora = $targetLoraName
+    }
+} elseif ($Lora -and $Lora.Trim() -ne "" -and $Lora.ToLower() -ne "none") {
+    $activeLora = $Lora
+}
+
 $promptDict = @{
     "1" = @{
         class_type = "UNETLoader"
@@ -226,6 +250,19 @@ $promptDict = @{
             images = @("7", 0)
         }
     }
+}
+
+if ($activeLora) {
+    Write-Host "[ImageEdit] Injected Anatomy LoRA: $activeLora (Strength: $LoraStrength)" -ForegroundColor Magenta
+    $promptDict["10"] = @{
+        class_type = "LoraLoaderModelOnly"
+        inputs = @{
+            model = @("1", 0)
+            lora_name = $activeLora
+            strength_model = $LoraStrength
+        }
+    }
+    $promptDict["6"].inputs["model"] = @("10", 0)
 }
 
 # 若提供了第二参考图（如换装参考、画风参考），挂载到 images.image_2

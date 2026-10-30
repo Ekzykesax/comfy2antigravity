@@ -1,4 +1,4 @@
-﻿param (
+param (
     [Parameter(Mandatory = $true)]
     [string]$Prompt,
 
@@ -42,10 +42,13 @@
     [string]$Unet = "NoctQ_V4_int8_convrot.safetensors",
 
     [Parameter(Mandatory = $false)]
-    [string]$Lora = "none",
+    [string]$Lora = "auto",
 
     [Parameter(Mandatory = $false)]
-    [double]$LoraStrength = 1.0,
+    [double]$LoraStrength = 0.8,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$NSFW,
 
     [Parameter(Mandatory = $false)]
     [string]$Sampler = "viggle",
@@ -63,10 +66,7 @@
     [string]$Scheduler = "simple",
 
     [Parameter(Mandatory = $false)]
-    [string]$WorkspaceDir = "",
-
-    [Parameter(Mandatory = $false)]
-    [switch]$NSFW
+    [string]$WorkspaceDir = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -97,6 +97,7 @@ if (-not (Test-Path $ComfyRootDir)) {
 $defaultWorkspaceFolderName = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("Q29tZnlVSeeUn+WbvuaIkOaenA==")) # "ComfyUI生图成果"
 $outputFolderName = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("55Sf5oiQ55qE5Zu+54mH")) # "生成的图片"
 $refFolderName = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("5Y+C6ICD5Zu+")) # "参考图"
+$allAgesFolderName = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("5YWo5bm06b6E")) # "全年龄"
 
 if (-not $WorkspaceDir -or $WorkspaceDir.Trim() -eq "") {
     if ($env:COMFY_WORKSPACE_DIR -and (Test-Path $env:COMFY_WORKSPACE_DIR)) {
@@ -220,10 +221,10 @@ function Process-RefImageFile($imgPath, $maxDim, $comfyRoot, $wsDir, $refFldr) {
         $cands = @(
             (Join-Path $destInputFolder $imgPath),
             (Join-Path $wsDir (Join-Path $refFldr $imgPath)),
-            (Join-Path $wsDir (Join-Path $refFldr (Join-Path "全年龄" $imgPath))),
+            (Join-Path $wsDir (Join-Path $refFldr (Join-Path $allAgesFolderName $imgPath))),
             (Join-Path $wsDir (Join-Path $refFldr (Join-Path "NSFW" $imgPath))),
-            (Join-Path $wsDir (Join-Path "生成的图片" (Join-Path "全年龄" $imgPath))),
-            (Join-Path $wsDir (Join-Path "生成的图片" (Join-Path "NSFW" $imgPath)))
+            (Join-Path $wsDir (Join-Path $outputFolderName (Join-Path $allAgesFolderName $imgPath))),
+            (Join-Path $wsDir (Join-Path $outputFolderName (Join-Path "NSFW" $imgPath)))
         )
         foreach ($c in $cands) {
             if (Test-Path $c) {
@@ -250,12 +251,25 @@ if ($refFile1) { Write-Host "[ComfyUI] Reference image 1 (Picture 1): $refFile1"
 if ($refFile2) { Write-Host "[ComfyUI] Reference image 2 (Picture 2): $refFile2" }
 
 # 5. Construct Prompt Nodes
+$nsfwPattern = "(?i)(nsfw|nude|naked|topless|bottomless|pussy|slit|vulva|genitals|anus|nipple|breast|cleavage|bareback|braless|lingerie|bikini|thong|microbikini|sheer|mesh|lace|crotch|boudoir|gravure|spreadlegs|backhips|sexy|venus|sensual|bath|69|pronelie|shower|penetration|vaginal|pelvic|busty|uncensored|sultry|macro-slit|realanatomy|裸|全裸|半裸|去衣|脱衣|私密|一线天|阴部|阴唇|乳头|巨乳|乳晕|下体|情趣|透视|内衣|比基尼|丁字裤)"
+$detectedNsfw = $NSFW -or ($Prompt -match $nsfwPattern)
+
+$activeLora = ""
+$defaultAnatomyLora = "qwen2_1-femaledVaginus-nsfw-v1_3-fine_L22-31.safetensors"
+if ($Lora.ToLower() -eq "auto") {
+    if ($detectedNsfw) {
+        $activeLora = $defaultAnatomyLora
+    }
+} elseif ($Lora -and $Lora.Trim() -ne "" -and $Lora.ToLower() -ne "none") {
+    $activeLora = $Lora
+}
+
 $modelSource = @("1", 0)
 $clipSource = @("2", 0)
 
-$useLora = ($Lora -and $Lora.Trim() -ne "" -and $Lora.ToLower() -ne "none")
+$useLora = ($activeLora -ne "")
 if ($useLora) {
-    Write-Host "[ComfyUI] Enabling LoRA: $Lora (Strength: $LoraStrength)"
+    Write-Host "[ComfyUI] Enabling LoRA: $activeLora (Strength: $LoraStrength)" -ForegroundColor Magenta
     $modelSource = @("11", 0)
     $clipSource = @("11", 1)
 }
@@ -396,7 +410,7 @@ if ($useLora) {
         inputs = @{
             model = @("1", 0)
             clip = @("2", 0)
-            lora_name = $Lora
+            lora_name = $activeLora
             strength_model = $LoraStrength
             strength_clip = $LoraStrength
         }
@@ -463,7 +477,7 @@ if (-not $completedFile) {
 $sourcePath = Join-Path "$ComfyRootDir\ComfyUI\output" $completedFile
 $nsfwPattern = "(?i)(nsfw|nude|naked|topless|bottomless|pussy|slit|vulva|genitals|anus|nipple|breast|cleavage|bareback|braless|lingerie|bikini|thong|microbikini|sheer|mesh|lace|crotch|boudoir|gravure|spreadlegs|backhips|sexy|venus|sensual|bath|69|pronelie|shower|penetration|vaginal|pelvic|busty|uncensored|sultry|macro-slit|realanatomy|裸|全裸|半裸|去衣|脱衣|私密|一线天|阴部|阴唇|乳头|巨乳|乳晕|下体|情趣|透视|内衣|比基尼|丁字裤)"
 $isNsfw = $NSFW -or ($Prompt -match $nsfwPattern)
-$category = if ($isNsfw) { "NSFW" } else { "全年龄" }
+$category = if ($isNsfw) { "NSFW" } else { $allAgesFolderName }
 $archiveDir = Join-Path (Join-Path $WorkspaceDir $outputFolderName) $category
 if (!(Test-Path $archiveDir)) {
     New-Item -ItemType Directory -Force -Path $archiveDir | Out-Null
