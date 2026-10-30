@@ -57,8 +57,8 @@ Includes out-of-the-box pipelines for high-fidelity text-to-image, reference-gui
 7. **Hardware-Aware VRAM Optimization & Silent Service Recovery**:
    - Rigorously optimized for 8GB VRAM environments: reference images are proactively scaled and aspect-aligned to prevent VRAM overflows and avoid system memory paging penalties.
    - Automatically inspects ComfyUI API health before execution and silently initializes the background service if offline, ensuring an uninterrupted automation loop.
-8. **Classified Asset Organization & Masterpiece Archiving**:
-   - Automatically indexes and organizes all generated assets, enforcing strict isolation between General (All-Ages) and NSFW business directories.
+8. **Structured Asset Archiving & Masterpiece Gallery**:
+   - Automatically indexes and organizes all generated assets, draft iterations, reference materials, and workflow configs into structured directories.
    - Features a dedicated "Masterpiece Gallery": images upscaled to 4K are automatically routed as approved finals, while satisfactory non-4K pieces can be archived with a single command.
 
 ---
